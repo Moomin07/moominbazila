@@ -2,425 +2,619 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Moomin ❤️ Bazila — A Little Love Diary</title>
-  <meta name="description" content="A mobile-first romantic love diary from Moomin to Bazila — notes, moods, love notes, surprises and memories." />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Moomin ❤️ Bazila — A Tiny Love App</title>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
-    /* Mobile-first base */
+    /* Mobile-first base styles */
     :root{
-      --bg-1: linear-gradient(135deg,#ffe6f0 0%,#fff0f7 40%, #f3e8ff 100%);
-      --card: rgba(255,255,255,0.85);
-      --accent: #ff6fa3;
-      --accent-2: #ffb5c7;
-      --muted: #6b6b6b;
-      --glass: rgba(255,255,255,0.6);
-      --shadow: 0 8px 18px rgba(100,50,100,0.08);
+      --bg-1: linear-gradient(135deg,#ffd6e8 0%, #ffeed6 40%, #f3e8ff 100%);
+      --card: rgba(255,255,255,0.92);
+      --accent: rgba(255,96,146,0.95);
+      --glass: rgba(255,255,255,0.55);
+      --shadow: 0 8px 20px rgba(99,35,80,0.12);
+      --muted:#6b5b6e;
+      --heart-size: 36px;
     }
 
     html,body{height:100%;}
     body{
-      margin:0;
-      font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-      background: var(--bg-1);
-      -webkit-font-smoothing:antialiased;
-      color:#222;
+      margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background:var(--bg-1);min-height:100vh;display:flex;flex-direction:column;color:#322; -webkit-font-smoothing:antialiased;
       overflow-y:auto;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    /* floating dreamy background */
-    .float-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;}
-    .container{position:relative;z-index:5;padding:18px;max-width:720px;margin:0 auto;}
+    header{position:sticky;top:0;backdrop-filter:blur(6px);background:linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.05));padding:.8rem 1rem;display:flex;align-items:center;gap:.6rem;z-index:50}
+    .brand{display:flex;align-items:center;gap:.6rem}
+    .logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#fff7fb,#ffdff0);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+    .logo .mini{font-family:'Dancing Script',cursive;font-size:18px;color:var(--accent)}
+    h1{font-family:'Dancing Script',cursive;margin:0;font-size:18px}
+    .sub{font-size:12px;color:var(--muted)}
 
-    header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-    .logo{
-      width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;box-shadow:var(--shadow)
-    }
-    .title{font-family:'Dancing Script', cursive;font-size:20px}
-    .subtitle{font-size:12px;color:var(--muted)}
+    main{padding:1rem;flex:1;display:flex;flex-direction:column;gap:1rem}
 
-    /* Card layout */
-    .card{background:var(--card);backdrop-filter: blur(6px);border-radius:14px;padding:12px;box-shadow:var(--shadow);margin-bottom:12px}
+    /* card layout */
+    .card{background:var(--card);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
+    .bigcard{padding:16px;border-radius:18px}
 
-    /* big touch-friendly buttons */
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 14px;border-radius:12px;border:0;font-weight:600;font-size:15px;cursor:pointer}
-    .btn-pink{background:linear-gradient(90deg,#ff9fc0,#ff6fa3);color:white}
-    .btn-soft{background:transparent;border:1px solid rgba(0,0,0,0.06);}
+    /* navigation */
+    nav{display:flex;gap:.6rem;overflow:auto}
+    .navbtn{flex:1;min-width:84px;padding:.6rem .8rem;border-radius:12px;border:none;background:linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.35));font-weight:600}
+    .navbtn:active{transform:scale(.99)}
 
-    /* Daily notes */
-    .note-input{display:flex;flex-direction:column;gap:8px}
-    textarea{resize:vertical;min-height:90px;border-radius:12px;padding:10px;border:1px solid rgba(0,0,0,0.06);font-size:15px}
-    select, input[type=date]{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06)}
+    /* Notes */
+    #notesList{display:flex;flex-direction:column;gap:.6rem}
+    .noteRow{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem}
+    .noteText{flex:1;font-size:14px}
+    .noteMeta{font-size:12px;color:var(--muted)}
 
-    .note-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-    .note-item{display:flex;flex-direction:column;padding:10px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.8));}
-    .note-meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+    /* Mood selector */
+    .moods{display:flex;gap:.4rem;flex-wrap:wrap}
+    .moodBtn{padding:.45rem .6rem;border-radius:12px;border:1px solid rgba(0,0,0,0.06);background:transparent}
 
-    /* Love notes slideshow */
-    .slideshow{position:relative;overflow:hidden;border-radius:12px;padding:12px;min-height:120px}
-    .slide{display:none;font-family:'Dancing Script',cursive;font-size:18px;padding:12px}
-    .slide.active{display:block}
+    /* Slideshow */
+    .slideshow{position:relative;overflow:hidden;border-radius:12px}
+    .slide{min-height:110px;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:'Dancing Script',cursive;font-size:18px}
+    .slideWrap{display:flex;transition:transform .6s cubic-bezier(.22,.9,.3,1)}
 
     /* Quotes */
-    .quotes{display:flex;overflow:auto;gap:8px;padding-bottom:6px}
-    .quote-card{min-width:220px;padding:10px;border-radius:12px;background:linear-gradient(180deg,#fff7fb,#fff1f6);box-shadow:var(--shadow)}
+    .quotes{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+    .quoteCard{padding:.8rem;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,240,250,0.6));font-size:13px}
 
-    /* Polaroid gallery */
-    .gallery{display:flex;gap:8px;overflow:auto;padding:6px}
-    .polaroid{min-width:120px;background:white;padding:8px;border-radius:10px;text-align:center}
-    .polaroid img{width:100%;height:100px;object-fit:cover;border-radius:8px}
-    .caption{font-size:12px;color:var(--muted)}
+    /* gallery */
+    #galleryGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .polaroid{background:linear-gradient(180deg,#fff,#fff8f8);padding:8px;border-radius:8px;display:block;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
+    .polaroid img{display:block;width:100%;height:100px;object-fit:cover;border-radius:6px}
 
-    /* Timeline */
-    .timeline{display:flex;flex-direction:column;gap:8px}
-    .milestone{display:flex;gap:8px;align-items:flex-start}
-    .dot{min-width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:6px}
+    /* timeline */
+    .timeline{display:flex;flex-direction:column;gap:.8rem}
+    .tItem{display:flex;gap:.6rem;align-items:flex-start}
+    .tDot{width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:6px}
 
-    /* Wheel */
-    .wheel-wrap{display:flex;justify-content:center}
-    canvas#wheel{width:240px;height:240px;touch-action:none}
+    /* wheel */
+    .wheelWrap{display:flex;flex-direction:column;align-items:center;gap:.6rem}
+    canvas#wheel{width:260px;height:260px;border-radius:50%;touch-action:none}
+    .spinBtn{padding:.6rem 1rem;border-radius:999px;border:none;background:linear-gradient(90deg,#ff92b7,#ffd2e8);font-weight:700}
 
-    /* Love meter */
-    .meter{display:flex;flex-direction:column;gap:8px}
-    input[type=range]{-webkit-appearance:none;height:8px;background:linear-gradient(90deg,#ffd1e6,#ff6fa3);border-radius:99px}
+    /* popup */
+    .popup{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:80}
+    .popup.show{display:flex}
+    .popupCard{width:92%;max-width:420px;background:var(--card);padding:16px;border-radius:16px;box-shadow:0 20px 40px rgba(30,20,40,0.18);text-align:center}
 
-    footer{font-size:13px;color:var(--muted);text-align:center;padding:16px}
-
-    /* Responsive tweaks */
-    @media(min-width:600px){
-      .container{padding:26px}
-      .title{font-size:26px}
-      .slideshow{min-height:160px}
+    /* small screens fine-tuning */
+    @media (min-width:700px){
+      main{padding:1.6rem}
+      .quotes{grid-template-columns:repeat(3,1fr)}
+      #galleryGrid{grid-template-columns:repeat(4,1fr)}
     }
 
-    /* playful floating hearts */
-    .heart{position:fixed;pointer-events:none;z-index:1;opacity:0.9}
-    .watermark{position:fixed;right:10px;bottom:10px;opacity:0.07;font-family:'Dancing Script';font-size:36px}
+    /* floating hearts container */
+    #floatLayer{position:fixed;inset:0;pointer-events:none;z-index:10}
 
-    /* small helper */
-    .row{display:flex;gap:8px;align-items:center}
-    .muted{color:var(--muted);font-size:13px}
+    /* watermark */
+    footer{font-size:12px;text-align:center;padding:12px;color:var(--muted)}
+
+    /* small helpers */
+    .row{display:flex;gap:.6rem;align-items:center}
+    .center{text-align:center}
+    .tiny{font-size:12px;color:var(--muted)}
+
+    /* glowing heart */
+    .glowHeart{font-size:14px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg, rgba(255,96,146,0.12), rgba(255,183,197,0.08));box-shadow:0 6px 20px rgba(255,96,146,0.08)}
+
+    /* subtle animations */
+    .pop{transform-origin:center;animation:pop .35s ease}
+    @keyframes pop{0%{transform:scale(.9);opacity:0}60%{transform:scale(1.03);opacity:1}100%{transform:scale(1)}}
 
   </style>
 </head>
 <body>
+  <div id="floatLayer" aria-hidden="true"></div>
 
-  <!-- floating decorative canvas -->
-  <svg class="float-canvas" width="100%" height="100%" aria-hidden="true">
-    <defs>
-      <linearGradient id="g1" x1="0" x2="1">
-        <stop offset="0" stop-color="#fff0f7"/>
-        <stop offset="1" stop-color="#f3e8ff"/>
-      </linearGradient>
-    </defs>
-  </svg>
-
-  <!-- gentle floating hearts created by JS for perf -->
-  <div id="hearts" class="float-heap" aria-hidden="true"></div>
-
-  <div class="container">
-    <header>
-      <div class="logo">M&B</div>
+  <header class="card">
+    <div class="brand">
+      <div class="logo"><span class="mini">M💗B</span></div>
       <div>
-        <div class="title">Moomin ❤️ Bazila</div>
-        <div class="subtitle">A tiny love diary — built for phones</div>
+        <h1>Moomin ❤️ Bazila</h1>
+        <div class="sub">A tiny love diary — mobile-first & touch friendly</div>
       </div>
-      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-        <button id="surpriseBtn" class="btn btn-pink" title="Click for a surprise">Click for a Surprise</button>
-        <button id="musicToggle" class="btn btn-soft">Music</button>
-      </div>
-    </header>
+    </div>
+    <div style="margin-left:auto" class="row">
+      <button id="audioToggle" class="navbtn tiny">Music</button>
+      <button id="surpriseBtn" class="navbtn tiny">Surprise</button>
+    </div>
+  </header>
 
-    <!-- Love notes slideshow -->
-    <section class="card" aria-labelledby="loveNotesHeading">
-      <h3 id="loveNotesHeading" style="margin:0 0 8px 0">Love Notes from Moomin</h3>
-      <div class="slideshow" id="slideshow">
-        <div class="slide active">My dearest Zulaikha, every sunrise reminds me of your smile.</div>
-        <div class="slide">When you laugh, the world rewrites itself into sweeter words.</div>
-        <div class="slide">I collect ordinary days with you and name them treasures.</div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:8px;justify-content:center">
-        <button id="prevSlide" class="btn btn-soft">Prev</button>
-        <button id="nextSlide" class="btn btn-soft">Next</button>
-      </div>
-    </section>
+  <main>
+    <nav class="card">
+      <button class="navbtn" data-show="home">Home</button>
+      <button class="navbtn" data-show="notes">Daily Notes</button>
+      <button class="navbtn" data-show="gallery">Gallery</button>
+      <button class="navbtn" data-show="timeline">Dates</button>
+      <button class="navbtn" data-show="extras">Extras</button>
+    </nav>
 
-    <!-- Daily notes + mood tracker -->
-    <section class="card" aria-labelledby="dailyHeading">
-      <h3 id="dailyHeading">Daily Notes</h3>
-      <div class="note-input">
-        <input type="date" id="noteDate" />
-        <textarea id="noteText" placeholder="Write something — what made you mad, sad, or joyful today?" aria-label="Daily note"></textarea>
-        <div class="row">
-          <select id="moodSelect" aria-label="Mood">
-            <option value="happy">😊 Happy</option>
-            <option value="love">😍 In love</option>
-            <option value="sad">😢 Sad</option>
-            <option value="angry">😡 Angry</option>
-            <option value="meh">😐 Meh</option>
-          </select>
-          <button id="saveNote" class="btn btn-pink">Save Note</button>
-          <button id="clearNotes" class="btn btn-soft">Clear all</button>
+    <!-- HOME -->
+    <section id="home" class="bigcard card">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div>
+          <div class="glowHeart">Moomin ❤️ Bazila</div>
+          <div class="tiny">Swirl the heart wheel, read a note, or check memories.</div>
+        </div>
+        <div class="center">
+          <div id="countdownNext" class="tiny"></div>
+          <div id="countdownAnniversary" class="tiny"></div>
+          <div id="countdownBirthday" class="tiny"></div>
+          <div class="tiny">Next special days</div>
         </div>
       </div>
 
-      <div class="note-list" id="noteList" aria-live="polite"></div>
-    </section>
-
-    <!-- Quotes library -->
-    <section class="card">
-      <h3>Romantic Quotes</h3>
-      <div class="quotes" id="quotes">
-        <div class="quote-card">“I love you not only for what you are, but for what I am when I am with you.”</div>
-        <div class="quote-card">“You are the poem I never knew how to write and this life is the story I always wanted to tell.”</div>
-        <div class="quote-card">“Home is wherever I’m with you.”</div>
-      </div>
-    </section>
-
-    <!-- Interactive wheel & secret hearts -->
-    <section class="card">
-      <h3>Spin-the-Heart Wheel</h3>
-      <div class="wheel-wrap">
-        <canvas id="wheel" width="500" height="500" aria-label="Spin the heart wheel"></canvas>
-      </div>
-      <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
-        <button id="spinBtn" class="btn btn-pink">Spin</button>
-        <div id="wheelResult" class="muted">Result will appear here</div>
-      </div>
-    </section>
-
-    <!-- Polaroid gallery -->
-    <section class="card">
-      <h3>Photo Gallery</h3>
-      <div class="gallery" id="gallery">
-        <!-- Example placeholders (replace with real images by changing src) -->
-        <div class="polaroid"><img src="https://picsum.photos/seed/1/300/300" alt="couple pic 1"/><div class="caption">First coffee date</div></div>
-        <div class="polaroid"><img src="https://picsum.photos/seed/2/300/300" alt="couple pic 2"/><div class="caption">Sunset walk</div></div>
-        <div class="polaroid"><img src="https://picsum.photos/seed/3/300/300" alt="couple pic 3"/><div class="caption">Silly selfie</div></div>
-      </div>
-    </section>
-
-    <!-- Timeline + countdown -->
-    <section class="card">
-      <h3>Memory Timeline</h3>
-      <div class="timeline" id="timeline">
-        <div class="milestone"><div class="dot"></div><div><strong>First Message</strong><div class="muted">2023-08-12</div><div class="muted">"Hey!" — simple, perfect.</div></div></div>
-        <div class="milestone"><div class="dot"></div><div><strong>First Date</strong><div class="muted">2023-09-02</div><div class="muted">Pizza, park and clumsy laughs.</div></div></div>
-      </div>
-
-      <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-        <label class="muted">Countdown to next anniversary:</label>
-        <div id="countdown" class="muted">-- days</div>
-      </div>
-    </section>
-
-    <!-- Love quiz and meter -->
-    <section class="card">
-      <h3>Love Quiz</h3>
-      <div id="quiz" style="display:flex;flex-direction:column;gap:8px">
-        <div><strong>What's our favourite movie to rewatch?</strong>
-          <div style="display:flex;gap:8px;margin-top:6px"><button class="btn btn-soft quizOpt">A</button><button class="btn btn-soft quizOpt">B</button><button class="btn btn-soft quizOpt">C</button></div>
+      <!-- Slideshow of love notes -->
+      <div style="margin-top:12px">
+        <div class="slideshow card" id="loveNotesWrap">
+          <div class="slideWrap" id="slideWrap"></div>
         </div>
-        <div class="muted">Answers are just for fun — no grade required ❤️</div>
+      </div>
+
+      <!-- Quotes -->
+      <div style="margin-top:12px" class="card">
+        <div style="font-weight:700;margin-bottom:8px">Romantic Quotes</div>
+        <div class="quotes" id="quotesGrid"></div>
       </div>
     </section>
 
-    <section class="card">
-      <h3>Love Meter</h3>
-      <div class="meter">
-        <input type="range" id="loveRange" min="0" max="100" value="80">
-        <div id="loveMsg" class="muted">Love level: 80 — Infinity love detected!</div>
+    <!-- NOTES -->
+    <section id="notes" class="card" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong>Daily Notes</strong>
+        <div class="tiny">Saved locally on this device</div>
+      </div>
+
+      <form id="noteForm" style="margin-top:12px;display:flex;gap:.6rem;flex-direction:column">
+        <input type="date" id="noteDate" style="padding:.6rem;border-radius:10px;border:1px solid rgba(0,0,0,0.06)" />
+        <textarea id="noteContent" rows="4" placeholder="Write a small love note, mood or memory..." style="border-radius:10px;padding:.6rem;border:1px solid rgba(0,0,0,0.06)"></textarea>
+        <div class="moods" id="moodPicker">
+          <!-- emojis injected -->
+        </div>
+        <div class="row" style="justify-content:space-between">
+          <button type="submit" class="navbtn">Save Note</button>
+          <button type="button" id="clearNotes" class="navbtn" style="background:linear-gradient(90deg,#fff,#ffd6e8)">Clear</button>
+        </div>
+      </form>
+
+      <div id="notesList" style="margin-top:12px"></div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" class="card" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong>Photo Library</strong>
+        <div class="tiny">No captions — just the memories</div>
+      </div>
+      <div style="margin-top:8px" class="row">
+        <input type="file" id="addImages" accept="image/*" multiple style="flex:1" />
+        <button id="clearGallery" class="navbtn tiny" style="width:110px">Clear</button>
+      </div>
+
+      <!-- Pre-filled placeholders for 6 images. In your VS Code project, put your images in folder `images/` named photo1.jpg .. photo6.jpg -->
+      <div id="galleryGrid" style="margin-top:12px">
+        <div class="polaroid"><img src="images/photo1.jpg" alt="Photo 1"></div>
+        <div class="polaroid"><img src="images/photo2.jpg" alt="Photo 2"></div>
+        <div class="polaroid"><img src="images/photo3.jpg" alt="Photo 3"></div>
+        <div class="polaroid"><img src="images/photo4.jpg" alt="Photo 4"></div>
+        <div class="polaroid"><img src="images/photo5.jpg" alt="Photo 5"></div>
+        <div class="polaroid"><img src="images/photo6.jpg" alt="Photo 6"></div>
       </div>
     </section>
 
-    <div class="watermark">Moomin ❤️ Bazila</div>
+    <!-- TIMELINE -->
+    <section id="timeline" class="card" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong>Important Dates</strong>
+        <div class="tiny">Tap a card to view memory</div>
+      </div>
 
-    <footer>Made with soft code and softer feelings — open on your phone for the full experience.</footer>
+      <div class="timeline" id="timelineList" style="margin-top:12px"></div>
+    </section>
+
+    <!-- EXTRAS: wheel, quiz, love meter -->
+    <section id="extras" class="card" style="display:none">
+      <div style="display:flex;gap:.6rem;flex-direction:column">
+
+        <div class="card wheelWrap">
+          <canvas id="wheel" width="520" height="520"></canvas>
+          <button id="spin" class="spinBtn">Spin the Heart</button>
+          <div id="wheelResult" class="tiny center"></div>
+        </div>
+
+        <div class="card">
+          <strong>Love Quiz</strong>
+          <div style="margin-top:8px">Who do you love the most?</div>
+          <div style="display:flex;gap:.6rem;margin-top:8px">
+            <button class="navbtn quizAns">Moomin</button>
+            <button class="navbtn quizAns">Bazila</button>
+            <button class="navbtn quizAns">Everyone</button>
+          </div>
+          <div id="quizResult" class="tiny center" style="margin-top:8px"></div>
+        </div>
+
+        <div class="card">
+          <strong>Love Meter</strong>
+          <input type="range" id="loveMeter" min="0" max="100" value="88" />
+          <div id="loveMeterText" class="tiny center" style="margin-top:8px"></div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="card">Moomin ♥ Bazila — keep this page safe on your phone. Tip: Install as a PWA or add to home screen for app-like feel.</footer>
+
+  <!-- popup container -->
+  <div id="popup" class="popup" role="dialog" aria-modal="true">
+    <div class="popupCard">
+      <div id="popupContent"></div>
+      <div style="margin-top:12px"><button id="closePopup" class="navbtn">Close</button></div>
+    </div>
   </div>
 
-  <!-- audio elements and hidden poem -->
-  <audio id="bgMusic" loop src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3dd6a7c0bf.mp3?filename=calm-piano-110873.mp3"></audio>
-  <audio id="popSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3e7b3f4c3b.mp3?filename=pop-6756.mp3"></audio>
-
   <script>
-    // ======= Helpers & initial data =======
-    const LS_NOTES = 'mb_notes_v1';
-    const LS_LAST_NOTE_DAY = 'mb_last_note_day';
-
-    const defaultSlides = [
-      'My dearest Zulaikha, every sunrise reminds me of your smile.',
-      'When you laugh, the world rewrites itself into sweeter words.',
-      'I collect ordinary days with you and name them treasures.'
+    /* --------------------------- Helpers & Data --------------------------- */
+    const specialDates = [
+      {date:'2025-03-07',title:`Bazila's Birthday`, message:`Happy birthday, Zulaikha — my star 🌟`},
+      {date:'2025-04-10',title:`Moomin's Birthday`, message:`Happy birthday, my love — let's celebrate!`},
+      {date:'2024-03-09',title:`Anniversary`, message:`Our journey began — 9th March 2024`},
+      {date:'2025-05-24',title:`First kiss`, message:`That shy, bright moment on 24 May 2025`},
+      {date:'2025-06-28',title:`First lip kiss`, message:`Our first lip kiss — the world paused.`}
     ];
 
-    // small util
-    const el = id => document.getElementById(id);
+    const defaultLoveNotes = [
+      "I find new reasons to fall for you every morning.",
+      "Sometimes I smile for no reason, then I remember you.",
+      "If I had a flower for every time I thought of you..." ,
+      "Your laugh is my favourite melody."
+    ];
 
-    // ===== Slideshow =====
-    (function slideshow(){
-      const slides = Array.from(document.querySelectorAll('.slide'));
-      let i=0;
-      const show = idx => {
-        slides.forEach(s=>s.classList.remove('active'));
-        slides[idx].classList.add('active');
-      }
-      el('nextSlide').addEventListener('click',()=>{i=(i+1)%slides.length;show(i)});
-      el('prevSlide').addEventListener('click',()=>{i=(i-1+slides.length)%slides.length;show(i)});
+    const quotes = [
+      "Love is composed of a single soul inhabiting two bodies.",
+      "I have found the one my heart loves.",
+      "You are my today and all of my tomorrows.",
+      "Where there is love there is life."
+    ];
 
-      // rotate automatically slowly
-      setInterval(()=>{i=(i+1)%slides.length;show(i)},6000);
-    })();
-
-    // ===== Notes localStorage =====
-    function loadNotes(){
-      const raw = localStorage.getItem(LS_NOTES);
-      if(!raw) return [];
-      try{ return JSON.parse(raw) }catch(e){return []}
+    /* ---------------------- Floating hearts (Easter glow) --------------------- */
+    const floatLayer = document.getElementById('floatLayer');
+    function spawnHeart(x, y, size=24, color=null){
+      const el=document.createElement('div');
+      el.innerHTML='❤';
+      el.style.position='absolute';
+      el.style.left=(x|| (Math.random()*100))+'%';
+      el.style.top=(y|| (Math.random()*80))+'%';
+      el.style.fontSize=size+'px';
+      el.style.opacity='0.9';
+      el.style.pointerEvents='none';
+      el.style.transform=`translate(-50%,-50%)`;
+      el.style.animation=`floatUp ${6+Math.random()*6}s linear forwards`;
+      el.style.filter='drop-shadow(0 6px 12px rgba(255,80,140,0.12))';
+      floatLayer.appendChild(el);
+      setTimeout(()=>el.remove(),12000);
     }
-    function saveNotes(notes){ localStorage.setItem(LS_NOTES,JSON.stringify(notes)); }
+    const floatStyle = document.createElement('style');
+    floatStyle.innerHTML='@keyframes floatUp{0%{transform:translate(-50%,10px) scale(1);opacity:1}100%{transform:translate(-50%,-160px) scale(.7);opacity:0}}';
+    document.head.appendChild(floatStyle);
 
-    function renderNotes(){
-      const list = el('noteList'); list.innerHTML='';
-      const notes = loadNotes().sort((a,b)=> new Date(b.date)-new Date(a.date));
-      if(notes.length===0){ list.innerHTML='<div class="muted">No notes yet — write one to get started ❤️</div>'; return }
+    // gentle ongoing drift
+    setInterval(()=>spawnHeart(),1400);
+
+    /* ----------------------- Routing between sections ---------------------- */
+    document.querySelectorAll('[data-show]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        showSection(btn.dataset.show);
+      });
+    });
+    function showSection(id){
+      document.querySelectorAll('main section').forEach(s=>s.style.display='none');
+      const el=document.getElementById(id);
+      if(el) el.style.display='block';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    /* ----------------------- Love notes slideshow -------------------------- */
+    const slideWrap = document.getElementById('slideWrap');
+    let notes = JSON.parse(localStorage.getItem('love_notes')) || defaultLoveNotes.slice();
+    function renderSlides(){
+      slideWrap.innerHTML='';
       notes.forEach(n=>{
-        const div = document.createElement('div'); div.className='note-item';
-        div.innerHTML = `<div class='note-meta'><div>${n.moodEmoji || ''} <strong>${n.date}</strong></div><div><button class='btn btn-soft smallDel' data-date='${n.date}' style='padding:6px;font-size:12px'>Delete</button></div></div><div style='margin-top:6px'>${escapeHtml(n.text)}</div>`;
-        list.appendChild(div);
+        const d=document.createElement('div');d.className='slide';d.textContent=n;slideWrap.appendChild(d);
       });
-      Array.from(document.getElementsByClassName('smallDel')).forEach(btn=>btn.addEventListener('click',e=>{
-        const d = e.currentTarget.dataset.date; if(!confirm('Delete this note?')) return;
-        let notes = loadNotes().filter(x=>x.date!==d); saveNotes(notes); renderNotes();
-      }))
-    }
-
-    function escapeHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
-
-    el('saveNote').addEventListener('click',()=>{
-      const text = el('noteText').value.trim();
-      const date = el('noteDate').value || new Date().toISOString().slice(0,10);
-      const mood = el('moodSelect').value;
-      if(!text){ alert('Write something before saving.'); return }
-      const emoji = {happy:'😊',love:'😍',sad:'😢',angry:'😡',meh:'😐'}[mood]||'';
-      const notes = loadNotes();
-      notes.push({date,text,mood,moodEmoji:emoji});
-      saveNotes(notes); renderNotes(); el('noteText').value='';
-      // show a surprise if saved on this day
-      el('popSound').play().catch(()=>{});
-    });
-
-    el('clearNotes').addEventListener('click',()=>{if(confirm('Clear all notes?')){localStorage.removeItem(LS_NOTES);renderNotes();}});
-    renderNotes();
-
-    // ===== Surprise Button =====
-    const compliments = [
-      'You make ordinary things feel magic.',
-      'Your smile is my favorite sunrise.',
-      'I saved a pocket full of your laughter.'
-    ];
-    el('surpriseBtn').addEventListener('click',()=>{
-      const pick = compliments[Math.floor(Math.random()*compliments.length)];
-      showToast(pick);
-      el('popSound').play().catch(()=>{});
-    });
-
-    function showToast(msg){
-      const t = document.createElement('div'); t.className='card'; t.style.position='fixed'; t.style.left='50%'; t.style.transform='translateX(-50%)'; t.style.bottom='80px'; t.style.zIndex=9999; t.innerHTML=`<div style='font-weight:600'>Surprise</div><div style='margin-top:6px'>${msg}</div>`;
-      document.body.appendChild(t); setTimeout(()=>t.style.opacity=0,2600); setTimeout(()=>t.remove(),3000);
-    }
-
-    // ===== Wheel implementation (simple) =====
-    (function wheel(){
-      const canvas = el('wheel'); const ctx=canvas.getContext('2d'); const items=['Kiss','Chocolate','Surprise date','Movie night','Love note','Dance','Flowers','Breakfast in bed'];
-      const cw = canvas.width, ch=canvas.height; const cx=cw/2, cy=ch/2, r=Math.min(cx,cy)-10;
-      function draw(){
-        ctx.clearRect(0,0,cw,ch);
-        const n = items.length; for(let i=0;i<n;i++){
-          const a = (i/n)*Math.PI*2 - Math.PI/2;
-          ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a,a+2*Math.PI/n); ctx.closePath();
-          ctx.fillStyle = (i%2)?'#fff7fb':'#fff1f6'; ctx.fill();
-          ctx.save(); ctx.translate(cx,cy); ctx.rotate(a+Math.PI/n); ctx.fillStyle='#111'; ctx.textAlign='center'; ctx.font='18px Montserrat'; ctx.fillText(items[i], r*0.58, 6); ctx.restore();
-        }
-        // center heart
-        ctx.beginPath(); ctx.arc(cx,cy,36,0,Math.PI*2); ctx.fillStyle='linear-gradient(90deg,#ff9fc0,#ff6fa3)'; ctx.fillStyle='#ff6fa3'; ctx.fill();
-        ctx.fillStyle='white'; ctx.font='20px Dancing Script'; ctx.textAlign='center'; ctx.fillText('❤',cx,cy+8);
-        // top pointer
-        ctx.fillStyle='#ff6fa3'; ctx.beginPath(); ctx.moveTo(cx,4); ctx.lineTo(cx-10,24); ctx.lineTo(cx+10,24); ctx.fill();
+      // clone to make sliding loop feel nicer
+      const slides=slideWrap.children.length;
+      let idx=0;
+      function advance(){
+        idx=(idx+1)%slides;
+        slideWrap.style.transform=`translateX(-${idx*100}%)`;
       }
-      draw();
+      setInterval(advance,4200);
+    }
+    renderSlides();
 
-      let ang=0, spinning=false;
-      el('spinBtn').addEventListener('click',()=>{ if(spinning) return; spinning=true; el('wheelResult').textContent='Spinning...';
-        const duration = 3000 + Math.random()*2000; const start = performance.now(); const spins = 6 + Math.random()*4; const startAng = ang; const target = startAng + spins*2*Math.PI + Math.random()*2*Math.PI;
-        (function animate(t){ const p=(t-start)/duration; if(p<1){ ang = easeOutCubic(p,startAng,target); ctx.save(); ctx.translate(cx,cy); ctx.rotate(ang); ctx.translate(-cx,-cy); draw(); ctx.restore(); requestAnimationFrame(animate);} else { ang = target; ctx.save(); ctx.translate(cx,cy); ctx.rotate(ang); ctx.translate(-cx,-cy); draw(); ctx.restore(); spinning=false; const sector = Math.floor(((ang%(2*Math.PI))+2*Math.PI)%(2*Math.PI)/(2*Math.PI/items.length)); const res = items[(items.length-sector)%items.length]; el('wheelResult').textContent = 'You got: '+res; showToast('You got: '+res); }})();
+    /* ------------------------ Quotes grid --------------------------- */
+    const quotesGrid = document.getElementById('quotesGrid');
+    quotes.forEach(q=>{
+      const c=document.createElement('div');c.className='quoteCard';c.innerHTML=`<div style='font-family:Dancing Script,cursive'>"${q}"</div><div style='font-size:11px;margin-top:6px;color:var(--muted)'>— love library</div>`;quotesGrid.appendChild(c);
+    });
+
+    /* ---------------------- Daily notes (localStorage) --------------------- */
+    const noteForm = document.getElementById('noteForm');
+    const noteDate = document.getElementById('noteDate');
+    const noteContent = document.getElementById('noteContent');
+    const moodPicker = document.getElementById('moodPicker');
+    const notesList = document.getElementById('notesList');
+
+    const moods = ['😍','😊','😴','😔','😡','🤗','🤩'];
+    let selectedMood = moods[0];
+    moods.forEach(m=>{
+      const b=document.createElement('button');b.type='button';b.className='moodBtn';b.innerText=m;b.addEventListener('click',()=>{selectedMood=m;document.querySelectorAll('.moodBtn').forEach(x=>x.style.outline='none');b.style.outline='2px solid rgba(255,96,146,0.25)'});moodPicker.appendChild(b);
+    });
+
+    function loadNotes(){
+      const arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
+      notesList.innerHTML='';
+      arr.slice().reverse().forEach((n,i)=>{
+        const r=document.createElement('div');r.className='noteRow card';
+        r.innerHTML=`<div class='noteText'>${escapeHtml(n.text)}</div><div class='noteMeta'>${n.date} · ${n.mood}</div>`;
+        notesList.appendChild(r);
       });
-      function easeOutCubic(t,s,e){ return s + (e-s)* (1 - Math.pow(1-t,3)); }
-    })();
-
-    // ===== Gallery click hearts (secret messages) =====
-    document.querySelectorAll('.polaroid').forEach(p=>{
-      p.addEventListener('click',()=>{ showToast('Hidden memory: "You looked beautiful that day"'); el('popSound').play().catch(()=>{}); });
+    }
+    noteForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      const d = noteDate.value || new Date().toISOString().slice(0,10);
+      const text = noteContent.value.trim();
+      if(!text) return alert('Write a little note!');
+      const arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
+      arr.push({date:d,text:text,mood:selectedMood});
+      localStorage.setItem('diary_notes',JSON.stringify(arr));
+      noteContent.value='';noteDate.value='';
+      loadNotes();
     });
+    document.getElementById('clearNotes').addEventListener('click',()=>{if(confirm('Clear all notes from this device?')){localStorage.removeItem('diary_notes');loadNotes();}});
+    loadNotes();
 
-    // ===== Countdown =====
-    (function countdown(){
-      const target = new Date(); // example: next anniversary — set month/day to your anniversary
-      // For demo, set to Dec 31 this year
-      const now = new Date(); target.setFullYear(now.getFullYear()); target.setMonth(11); target.setDate(31); target.setHours(0,0,0,0);
-      function tick(){ const diff = target - new Date(); if(diff<0){ el('countdown').textContent='Today! 🎉'; return } const days = Math.floor(diff/86400000); el('countdown').textContent = days + ' days'; }
-      tick(); setInterval(tick,60000);
-    })();
-
-    // ===== Love meter =====
-    el('loveRange').addEventListener('input',()=>{
-      const v = el('loveRange').value; let msg=''; if(v>95) msg='Infinity love detected!'; else if(v>70) msg='Cloud nine!'; else if(v>40) msg='Steady and warm.'; else msg='Working on it ❤️'; el('loveMsg').textContent = `Love level: ${v} — ${msg}`;
+    /* ---------------------- Gallery (images save to localStorage) ------------ */
+    const addImages = document.getElementById('addImages');
+    const galleryGrid = document.getElementById('galleryGrid');
+    function renderGallery(){
+      const imgs = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
+      if(imgs.length>0){
+        galleryGrid.innerHTML='';
+        imgs.forEach((d,idx)=>{
+          const card=document.createElement('div');card.className='polaroid';
+          const img=document.createElement('img');img.src=d;card.appendChild(img);
+          galleryGrid.appendChild(card);
+        });
+      } // otherwise leave the 6 placeholders present in HTML for direct file references
+    }
+    addImages.addEventListener('change',async(e)=>{
+      const files=Array.from(e.target.files).slice(0,30);
+      const arr = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
+      for(const f of files){
+        const data = await fileToDataUrl(f);
+        arr.push(data);
+      }
+      localStorage.setItem('gallery_imgs',JSON.stringify(arr));
+      renderGallery();
+      addImages.value='';
     });
+    document.getElementById('clearGallery').addEventListener('click',()=>{if(confirm('Clear gallery images?')){localStorage.removeItem('gallery_imgs');renderGallery();}});
+    function fileToDataUrl(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
+    renderGallery();
 
-    // ===== Music toggle =====
-    el('musicToggle').addEventListener('click',()=>{
-      const m = el('bgMusic'); if(m.paused){ m.play().catch(()=>alert('Autoplay blocked — tap to play.')); el('musicToggle').textContent='Music On'; } else{ m.pause(); el('musicToggle').textContent='Music'; }
-    });
-
-    // ===== Floating hearts & easter egg unlock =====
-    (function hearts(){
-      const heap = el('hearts'); function makeHeart(){ const h = document.createElement('div'); h.className='heart'; const size = 12+Math.random()*28; h.style.width=size+'px'; h.style.height=size+'px'; h.style.left=(Math.random()*100)+'%'; h.style.top=(40+Math.random()*60)+'%'; h.style.opacity=0.8; h.style.transform='translateY(0)'; h.innerHTML='❤'; h.style.fontSize=(size-2)+'px'; heap.appendChild(h); const dur=6000+Math.random()*6000; h.animate([{transform:'translateY(0) scale(1)'},{transform:'translateY(-180px) scale(1.2)',opacity:0}],{duration:dur,iterations:1}).onfinish=()=>h.remove(); }
-      setInterval(makeHeart,900);
-
-      // secret name detector (typing anywhere)
-      let buffer=''; window.addEventListener('keydown',e=>{
-        if(e.key.length===1){ buffer+=e.key; if(buffer.length>20) buffer=buffer.slice(-20); }
-        if(buffer.toLowerCase().includes('zulaikha')){ unlockSecret(); buffer=''; }
+    /* ----------------------- Timeline & special dates ---------------------- */
+    const timelineList = document.getElementById('timelineList');
+    function renderTimeline(){
+      timelineList.innerHTML='';
+      specialDates.forEach(sd=>{
+        const item=document.createElement('div');item.className='tItem card';
+        item.innerHTML=`<div style='width:56px'><div class='tDot'></div></div><div style='flex:1'><strong>${sd.title}</strong><div class='tiny'>${sd.date}</div></div>`;
+        item.addEventListener('click',()=>showPopup(`<h3>${sd.title}</h3><p class='tiny'>${sd.date}</p><p>${sd.message}</p>`));
+        timelineList.appendChild(item);
       });
-    })();
+    }
+    renderTimeline();
 
-    function unlockSecret(){
-      showToast('Secret unlocked — a poem appears');
-      // explode hearts
-      for(let i=0;i<30;i++){ const t = document.createElement('div'); t.className='heart'; t.style.left=(10+Math.random()*80)+'%'; t.style.top=(10+Math.random()*80)+'%'; t.style.fontSize=(8+Math.random()*28)+'px'; document.body.appendChild(t); t.animate([{opacity:1,transform:'translateY(0) scale(1)'},{opacity:0,transform:'translateY(-120px) scale(1.6)'}],{duration:1200+Math.random()*800}).onfinish=()=>t.remove(); }
-      // show poem modal (simple)
-      const modal = document.createElement('div'); modal.className='card'; modal.style.position='fixed'; modal.style.left='50%'; modal.style.top='50%'; modal.style.transform='translate(-50%,-50%)'; modal.style.zIndex=9999; modal.style.maxWidth='90%'; modal.innerHTML=`<div style='font-family:Dancing Script;font-size:18px'>For Zulaikha — my compass and softest secret.</div><div style='margin-top:8px'>In small things your name is a map; I fold it into my pockets and travel home.</div><div style='margin-top:12px;display:flex;justify-content:flex-end'><button id='closePoem' class='btn btn-pink'>Close</button></div>`;
-      document.body.appendChild(modal); el('popSound').play().catch(()=>{});
-      document.getElementById('closePoem').addEventListener('click',()=>modal.remove());
+    /* ------------------------- Popup util ------------------------------- */
+    const popup = document.getElementById('popup');
+    const popupContent = document.getElementById('popupContent');
+    document.getElementById('closePopup').addEventListener('click',()=>popup.classList.remove('show'));
+    function showPopup(html){popupContent.innerHTML=html;popup.classList.add('show');}
+
+    /* ----------------------- Surprise & daily note pop -------------------- */
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    surpriseBtn.addEventListener('click',()=>popRandomNote());
+    function popRandomNote(){
+      const pool = JSON.parse(localStorage.getItem('custom_notes')||'[]').concat(defaultLoveNotes);
+      const sel = pool[Math.floor(Math.random()*pool.length)];
+      showPopup(`<div style='font-family:Dancing Script,cursive;font-size:18px'>${sel}</div>`);
     }
 
-    // ===== Random daily love note on open =====
-    (function dailyNote(){
-      const last = localStorage.getItem(LS_LAST_NOTE_DAY)||''; const today = new Date().toISOString().slice(0,10);
-      if(last !== today){ const notes = defaultSlides.concat(compliments); const pick = notes[Math.floor(Math.random()*notes.length)]; showToast(pick); localStorage.setItem(LS_LAST_NOTE_DAY,today); }
-    })();
+    // show a new random love note once per day
+    const lastDaily = localStorage.getItem('last_daily_note');
+    const todayKey = new Date().toISOString().slice(0,10);
+    if(lastDaily !== todayKey){
+      popRandomNote();
+      localStorage.setItem('last_daily_note', todayKey);
+    }
 
-    // small accessibility: allow tapping anywhere to play audio if blocked
-    document.body.addEventListener('click', ()=>{ const m=el('bgMusic'); if(m && m.paused && localStorage.getItem('mb_play_on_tap')){ m.play().catch(()=>{}); } });
+    /* ------------------------ Wheel of outcomes -------------------------- */
+    const wheelCanvas = document.getElementById('wheel');
+    const wheelCtx = wheelCanvas.getContext('2d');
+    const wheelItems = ['Kiss','Chocolate','Surprise date','Hug attack','Movie night','Dance till dawn','Whisper a secret','Slow song'];
+    function drawWheel(){
+      const ctx = wheelCtx; const w=wheelCanvas.width; const h=wheelCanvas.height; const cx=w/2,cy=h/2; const r=Math.min(cx,cy)-8;
+      ctx.clearRect(0,0,w,h);
+      const slice = 2*Math.PI / wheelItems.length;
+      wheelItems.forEach((it,i)=>{
+        const start=i*slice; const end=start+slice;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath();
+        ctx.fillStyle = i%2 ? 'rgba(255,200,230,0.95)':'rgba(255,235,245,0.95)';
+        ctx.fill();
+        // text
+        ctx.save(); ctx.translate(cx,cy); ctx.rotate(start + slice/2); ctx.textAlign='right'; ctx.fillStyle='#4a2b3a'; ctx.font='bold 18px Inter'; ctx.fillText(it, r-16, 6); ctx.restore();
+      });
+      // center
+      ctx.beginPath(); ctx.arc(cx,cy,48,0,2*Math.PI);ctx.fillStyle='linear-gradient(white,pink)';ctx.fill();
+      ctx.fillStyle='#4a2b3a';ctx.font='700 18px Inter';ctx.textAlign='center';ctx.fillText('Spin',cx,cy+6);
+    }
+    drawWheel();
 
-    // small helper: preload popSound
-    el('popSound').volume=0.6;
+    let isSpinning=false;
+    document.getElementById('spin').addEventListener('click',async()=>{
+      if(isSpinning) return; isSpinning=true; playPop();
+      const spins = Math.floor(Math.random()*4)+4; // full spins
+      const sector = Math.floor(Math.random()*wheelItems.length);
+      const finalAngle = (spins*2*Math.PI) + (sector * (2*Math.PI/wheelItems.length)) + (Math.random() * (2*Math.PI/wheelItems.length));
+      const duration=4000;
+      animateRotation(finalAngle,duration).then(()=>{
+        isSpinning=false; const result=wheelItems[sector]; document.getElementById('wheelResult').textContent=`Result: ${result}`; showPopup(`<h3>${result}</h3><p class='tiny'>A sweet outcome awaits...</p>`);
+      });
+    });
 
-    // end of script
+    function animateRotation(target, duration){
+      const el = wheelCanvas; const start=performance.now(); const from= (parseFloat(el.dataset.rot)||0);
+      return new Promise(res=>{
+        function frame(t){
+          const p = Math.min(1,(t-start)/duration);
+          const eased = 1 - Math.pow(1-p,3);
+          const cur = from + (target-from)*eased;
+          el.style.transform = `rotate(${cur}rad)`;
+          if(p<1) requestAnimationFrame(frame); else {el.dataset.rot = cur; res();}
+        }
+        requestAnimationFrame(frame);
+      });
+    }
+
+    /* -------------------- Quiz & love meter ------------------------------ */
+    document.querySelectorAll('.quizAns').forEach(b=>b.addEventListener('click',()=>{
+      document.getElementById('quizResult').textContent = "Correct — Bazila, always 💖";
+      spawnHeart(null,null,28);
+    }));
+    const loveMeter = document.getElementById('loveMeter');
+    const loveMeterText = document.getElementById('loveMeterText');
+    function updateLoveText(v){
+      if(v>95) return 'Infinity love detected!';
+      if(v>80) return 'So much love 🌟';
+      if(v>50) return 'Warm fuzzy feelings';
+      if(v>20) return 'Cuddles required';
+      return 'Need more hugs!';
+    }
+    loveMeter.addEventListener('input',e=>loveMeterText.textContent=updateLoveText(e.target.value));
+    loveMeterText.textContent=updateLoveText(loveMeter.value);
+
+    /* ----------------------- keyboard easter egg ------------------------- */
+    const keyBuffer=[]; const secret='zulaikha';
+    window.addEventListener('keydown',e=>{
+      keyBuffer.push(e.key.toLowerCase()); if(keyBuffer.length>secret.length) keyBuffer.shift();
+      if(keyBuffer.join('').includes(secret)) triggerZulaikha();
+    });
+    function triggerZulaikha(){
+      showPopup(`<div style="font-family:Dancing Script,cursive;font-size:18px">Zulaikha —
+      You are the poem I never finish writing. <br/><br/>Forever, Moomin</div>`);
+      for(let i=0;i<24;i++) spawnHeart();
+    }
+
+    /* ------------------------- helper utilities ------------------------- */
+    function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+    /* ------------------------ Audio: user-upload + webaudio ---------------- */
+    let bgAudio=null; let audioFileUrl=null; const audioToggle=document.getElementById('audioToggle');
+    audioToggle.addEventListener('click',()=>{
+      // ask user to upload a track if none
+      if(!bgAudio){
+        const f=inputFile('Upload a music file (mp3) for background music');
+        f.then(file=>{
+          if(!file) return; audioFileUrl=URL.createObjectURL(file); bgAudio=new Audio(audioFileUrl); bgAudio.loop=true; bgAudio.volume=0.25; bgAudio.play(); audioToggle.textContent='Music: ON';
+        });
+      } else {
+        if(bgAudio.paused){bgAudio.play();audioToggle.textContent='Music: ON'} else {bgAudio.pause();audioToggle.textContent='Music: OFF'}
+      }
+    });
+    function inputFile(promptText){
+      return new Promise(res=>{
+        const inp=document.createElement('input');inp.type='file';inp.accept='audio/*';inp.onchange=()=>res(inp.files[0]);inp.click();setTimeout(()=>res(null),60000);
+      });
+    }
+
+    /* ------------------ small sound effect for clicks --------------------- */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playPop(){
+      try{
+        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+        o.type='sine'; o.frequency.value=420; g.gain.value=0.0001; o.connect(g); g.connect(audioCtx.destination);
+        o.start(); g.gain.exponentialRampToValueAtTime(0.1,audioCtx.currentTime+0.01); g.gain.exponentialRampToValueAtTime(0.00001,audioCtx.currentTime+0.18); o.stop(audioCtx.currentTime+0.22);
+      }catch(e){/* ignore */}
+    }
+
+    document.addEventListener('click',e=>{ if(e.target.closest('.glowHeart') || e.target.closest('.moodBtn')) playPop(); });
+
+    /* -------------------- initial small touches -------------------------- */
+    document.title = 'Moomin ❤️ Bazila';
+    // set today's date default in the note form
+    noteDate.value = new Date().toISOString().slice(0,10);
+
+    // small helper for adding custom love notes to slideshow (optional)
+    window.addLoveNote = (txt) => { notes.push(txt); localStorage.setItem('custom_notes', JSON.stringify([txt].concat(JSON.parse(localStorage.getItem('custom_notes')||'[]')))); renderSlides(); };
+
+    // expose a reset utility on console for debugging
+    window._resetLoveSite = ()=>{ if(confirm('Reset local storage for this love site?')) {localStorage.clear();location.reload();} };
+
+    // small UX: click outside popup to close
+    popup.addEventListener('click', (e)=>{ if(e.target===popup) popup.classList.remove('show'); });
+
+    // greeting for returning
+    setTimeout(()=>spawnHeart(null,null,36),900);
+
+    /* ------------------------- Countdown helpers ------------------------- */
+    function daysUntilMonthDay(month, day){
+      const now = new Date();
+      let year = now.getFullYear();
+      let target = new Date(year, month-1, day);
+      if(target < new Date(now.getFullYear(), now.getMonth(), now.getDate())) target = new Date(year+1, month-1, day);
+      const diff = Math.ceil((target - new Date(now.getFullYear(), now.getMonth(), now.getDate()))/86400000);
+      return {days:diff, date: target};
+    }
+
+    function nextSpecialDate(){
+      const today=new Date(); const candidates = specialDates.map(sd=>{
+        const [y,m,d] = sd.date.split('-').map(Number);
+        // prefer the next occurrence (use year if provided and in future, else compute next occurrence by month/day)
+        let year = (y && y>=today.getFullYear()) ? y : today.getFullYear();
+        let dt = new Date(year, m-1, d);
+        if(dt < today) dt = new Date(dt.getFullYear()+1, m-1, d);
+        return {sd,dt};
+      }).sort((a,b)=>a.dt - b.dt);
+      return candidates[0];
+    }
+
+    function updateCountdowns(){
+      // next special day
+      const next = nextSpecialDate();
+      if(next){
+        const days = Math.ceil((next.dt - new Date())/86400000);
+        document.getElementById('countdownNext').textContent = `${days} day(s) until ${next.sd.title} (${next.sd.date})`;
+      }
+      // anniversary (9 March)
+      const ann = daysUntilMonthDay(3,9);
+      document.getElementById('countdownAnniversary').textContent = `${ann.days} day(s) until Anniversary (Mar 9)`;
+      // moomin's birthday (10 April)
+      const bday = daysUntilMonthDay(4,10);
+      document.getElementById('countdownBirthday').textContent = `${bday.days} day(s) until Moomin's Birthday (Apr 10)`;
+    }
+    updateCountdowns(); setInterval(updateCountdowns, 60*60*1000);
+
   </script>
 </body>
 </html>
