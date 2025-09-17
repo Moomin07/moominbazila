@@ -759,3 +759,609 @@
       {date:'2025-04-10',title:`Moomin's Birthday`, message:`Happy birthday, my love — let's celebrate!`},
       {date:'2024-03-09',title:`Anniversary`, message:`Our journey began — 9th March 2024`},
       {date:'2025-05-24',title:`First kiss`, message:`That shy, bright moment on 24 May 2025`},
+      {date:'2025-06-28',title:`First lip kiss`, message:`Our first lip kiss — the world paused.`}
+    ];
+
+    const defaultLoveNotes = [
+      "I find new reasons to fall for you every morning.",
+      "Sometimes I smile for no reason, then I remember you.",
+      "If I had a flower for every time I thought of you..." ,
+      "Your laugh is my favourite melody."
+    ];
+
+    const quotes = [
+      "Love is composed of a single soul inhabiting two bodies.",
+      "I have found the one my heart loves.",
+      "You are my today and all of my tomorrows.",
+      "Where there is love there is life."
+    ];
+
+    /* ---------------------- Floating hearts (Easter glow) --------------------- */
+    const floatLayer = document.getElementById('floatLayer');
+    function spawnHeart(x, y, size=24, color=null){
+      const el=document.createElement('div');
+      el.innerHTML='❤';
+      el.style.position='absolute';
+      el.style.left=(x|| (Math.random()*100))+'%';
+      el.style.top=(y|| (Math.random()*80))+'%';
+      el.style.fontSize=size+'px';
+      el.style.opacity='0.9';
+      el.style.pointerEvents='none';
+      el.style.transform=`translate(-50%,-50%)`;
+      el.style.animation=`floatUp ${6+Math.random()*6}s linear forwards`;
+      el.style.filter='drop-shadow(0 6px 12px rgba(255,80,140,0.12))';
+      floatLayer.appendChild(el);
+      setTimeout(()=>el.remove(),12000);
+    }
+    const floatStyle = document.createElement('style');
+    floatStyle.innerHTML='@keyframes floatUp{0%{transform:translate(-50%,10px) scale(1);opacity:1}100%{transform:translate(-50%,-160px) scale(.7);opacity:0}}';
+    document.head.appendChild(floatStyle);
+
+    // gentle ongoing drift
+    setInterval(()=>spawnHeart(),1400);
+
+    /* ----------------------- Routing between sections ---------------------- */
+    document.querySelectorAll('[data-show]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        showSection(btn.dataset.show);
+      });
+    });
+    function showSection(id){
+      document.querySelectorAll('main section').forEach(s=>s.style.display='none');
+      const el=document.getElementById(id);
+      if(el) el.style.display='block';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    /* ----------------------- Love notes slideshow -------------------------- */
+    const slideWrap = document.getElementById('slideWrap');
+    let notes = JSON.parse(localStorage.getItem('love_notes')) || defaultLoveNotes.slice();
+    function renderSlides(){
+      slideWrap.innerHTML='';
+      notes.forEach(n=>{
+        const d=document.createElement('div');d.className='slide';d.textContent=n;slideWrap.appendChild(d);
+      });
+      // clone to make sliding loop feel nicer
+      const slides=slideWrap.children.length;
+      let idx=0;
+      function advance(){
+        idx=(idx+1)%slides;
+        slideWrap.style.transform=`translateX(-${idx*100}%)`;
+      }
+      setInterval(advance,4200);
+    }
+    renderSlides();
+
+    /* ------------------------ Quotes grid --------------------------- */
+    const quotesGrid = document.getElementById('quotesGrid');
+    quotes.forEach(q=>{
+      const c=document.createElement('div');
+      c.className='quoteCard';
+      c.innerHTML=`<div style='font-family:Dancing Script,cursive;font-weight:600;color:var(--text-primary)'>"${q}"</div><div style='font-size:11px;margin-top:8px;color:var(--text-muted)'>— love library</div>`;
+      quotesGrid.appendChild(c);
+    });
+
+    /* ---------------------- Enhanced Daily notes (localStorage) --------------------- */
+    const noteForm = document.getElementById('noteForm');
+    const noteDate = document.getElementById('noteDate');
+    const noteContent = document.getElementById('noteContent');
+    const moodPicker = document.getElementById('moodPicker');
+    const notesList = document.getElementById('notesList');
+
+    const moods = ['😍','😊','😴','😔','😡','🤗','🤩','💕','🥰','😘'];
+    let selectedMood = moods[0];
+    
+    // Enhanced mood picker
+    moods.forEach(m=>{
+      const b=document.createElement('button');
+      b.type='button';
+      b.className='moodBtn';
+      b.innerText=m;
+      b.addEventListener('click',()=>{
+        selectedMood=m;
+        document.querySelectorAll('.moodBtn').forEach(x=>x.classList.remove('selected'));
+        b.classList.add('selected');
+      });
+      moodPicker.appendChild(b);
+    });
+    // Select first mood by default
+    moodPicker.firstElementChild?.classList.add('selected');
+
+    function loadNotes(){
+      const arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
+      notesList.innerHTML='';
+      
+      if(arr.length === 0) {
+        notesList.innerHTML = '<div class="text-muted center" style="padding:2rem">No love notes yet. Write your first one! 💕</div>';
+        return;
+      }
+      
+      arr.slice().reverse().forEach((n,i)=>{
+        const noteCard = document.createElement('div');
+        noteCard.className = 'note-card';
+        noteCard.innerHTML = `
+          <div class="note-header">
+            <div class="note-date">${formatDate(n.date)}</div>
+            <div class="note-mood">${n.mood}</div>
+          </div>
+          <div class="note-text">${escapeHtml(n.text)}</div>
+        `;
+        notesList.appendChild(noteCard);
+      });
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { 
+        weekday: 'short', 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
+
+    noteForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      const d = noteDate.value || new Date().toISOString().slice(0,10);
+      const text = noteContent.value.trim();
+      if(!text) {
+        alert('Please write a love note! 💕');
+        return;
+      }
+      const arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
+      arr.push({date:d,text:text,mood:selectedMood});
+      localStorage.setItem('diary_notes',JSON.stringify(arr));
+      noteContent.value='';
+      noteDate.value=new Date().toISOString().slice(0,10);
+      loadNotes();
+      
+      // Show success animation
+      spawnHeart(50, 20, 32);
+    });
+
+    document.getElementById('clearNotes').addEventListener('click',()=>{
+      if(confirm('Are you sure you want to clear all your love notes? This cannot be undone.')) {
+        localStorage.removeItem('diary_notes');
+        loadNotes();
+      }
+    });
+    loadNotes();
+
+    /* ---------------------- Enhanced Gallery with expandable images ------------ */
+    const addImages = document.getElementById('addImages');
+    const galleryGrid = document.getElementById('galleryGrid');
+    const imageModal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalClose = document.querySelector('.modal-close');
+
+    function setupImageModal() {
+      // Close modal events
+      modalClose.addEventListener('click', closeModal);
+      imageModal.addEventListener('click', (e) => {
+        if (e.target === imageModal) closeModal();
+      });
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+    }
+
+    function openModal(imageSrc) {
+      modalImage.src = imageSrc;
+      imageModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      imageModal.classList.remove('active');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        modalImage.src = '';
+      }, 300);
+    }
+
+    function makeImageClickable(img) {
+      img.parentElement.addEventListener('click', () => {
+        openModal(img.src);
+      });
+    }
+
+    function renderGallery(){
+      const imgs = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
+      if(imgs.length>0){
+        galleryGrid.innerHTML='';
+        imgs.forEach((dataUrl,idx)=>{
+          const container = document.createElement('div');
+          container.className = 'image-container';
+          const img = document.createElement('img');
+          img.src = dataUrl;
+          img.alt = `Photo ${idx + 1}`;
+          container.appendChild(img);
+          galleryGrid.appendChild(container);
+          makeImageClickable(img);
+        });
+      } else {
+        // Make default images clickable
+        document.querySelectorAll('#galleryGrid img').forEach(makeImageClickable);
+      }
+    }
+
+    addImages.addEventListener('change',async(e)=>{
+      const files=Array.from(e.target.files).slice(0,30);
+      const arr = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
+      for(const f of files){
+        const data = await fileToDataUrl(f);
+        arr.push(data);
+      }
+      localStorage.setItem('gallery_imgs',JSON.stringify(arr));
+      renderGallery();
+      addImages.value='';
+      spawnHeart(70, 30, 28);
+    });
+
+    document.getElementById('clearGallery').addEventListener('click',()=>{
+      if(confirm('Clear all gallery images? This cannot be undone.')) {
+        localStorage.removeItem('gallery_imgs');
+        location.reload(); // Reload to show default images again
+      }
+    });
+
+    function fileToDataUrl(file){
+      return new Promise((res,rej)=>{
+        const r=new FileReader();
+        r.onload=()=>res(r.result);
+        r.onerror=rej;
+        r.readAsDataURL(file);
+      });
+    }
+
+    setupImageModal();
+    renderGallery();
+
+    /* ----------------------- Timeline & special dates ---------------------- */
+    const timelineList = document.getElementById('timelineList');
+    function renderTimeline(){
+      timelineList.innerHTML='';
+      specialDates.forEach(sd=>{
+        const item=document.createElement('div');
+        item.className='tItem';
+        item.innerHTML=`
+          <div class="tDot"></div>
+          <div style='flex:1'>
+            <strong style='color:var(--text-primary);font-size:16px'>${sd.title}</strong>
+            <div class='text-muted' style='margin-top:4px'>${formatDate(sd.date)}</div>
+          </div>
+        `;
+        item.addEventListener('click',()=>{
+          showPopup(`<h3 style='color:var(--text-primary);font-family:Dancing Script,cursive'>${sd.title}</h3><p class='text-muted'>${formatDate(sd.date)}</p><p style='color:var(--text-secondary);font-size:16px'>${sd.message}</p>`);
+          spawnHeart(50, 50, 30);
+        });
+        timelineList.appendChild(item);
+      });
+    }
+    renderTimeline();
+
+    /* ------------------------- Popup util ------------------------------- */
+    const popup = document.getElementById('popup');
+    const popupContent = document.getElementById('popupContent');
+    document.getElementById('closePopup').addEventListener('click',()=>popup.classList.remove('show'));
+    function showPopup(html){popupContent.innerHTML=html;popup.classList.add('show');}
+
+    /* ----------------------- Surprise & daily note pop -------------------- */
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    surpriseBtn.addEventListener('click',()=>popRandomNote());
+    function popRandomNote(){
+      const pool = JSON.parse(localStorage.getItem('custom_notes')||'[]').concat(defaultLoveNotes);
+      const sel = pool[Math.floor(Math.random()*pool.length)];
+      showPopup(`<div style='font-family:Dancing Script,cursive;font-size:20px;color:var(--text-primary)'>${sel}</div>`);
+      spawnHeart(50, 40, 32);
+    }
+
+    // show a new random love note once per day
+    const lastDaily = localStorage.getItem('last_daily_note');
+    const todayKey = new Date().toISOString().slice(0,10);
+    if(lastDaily !== todayKey){
+      setTimeout(() => {
+        popRandomNote();
+        localStorage.setItem('last_daily_note', todayKey);
+      }, 2000);
+    }
+
+    /* ------------------------ Enhanced Wheel of outcomes -------------------------- */
+    const wheelCanvas = document.getElementById('wheel');
+    const wheelCtx = wheelCanvas.getContext('2d');
+    const wheelItems = ['Kiss','Chocolate','Surprise date','Hug attack','Movie night','Dance till dawn','Whisper a secret','Slow song'];
+    
+    function drawWheel(){
+      const ctx = wheelCtx; 
+      const w = wheelCanvas.width; 
+      const h = wheelCanvas.height; 
+      const cx = w/2, cy = h/2; 
+      const r = Math.min(cx,cy) - 20;
+      
+      ctx.clearRect(0,0,w,h);
+      const slice = 2*Math.PI / wheelItems.length;
+      
+      wheelItems.forEach((it,i)=>{
+        const start = i * slice; 
+        const end = start + slice;
+        
+        ctx.beginPath(); 
+        ctx.moveTo(cx,cy); 
+        ctx.arc(cx,cy,r,start,end); 
+        ctx.closePath();
+        
+        // Enhanced colors
+        const colors = ['#FFE4E1', '#FFB6C1', '#FFC0CB', '#FFCCCB', '#FFE4E6', '#FFF0F5', '#FFEEF0', '#FFE1E6'];
+        ctx.fillStyle = colors[i] || '#FFE4E1';
+        ctx.fill();
+        
+        // Border
+        ctx.strokeStyle = 'rgba(255,96,146,0.3)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // text
+        ctx.save(); 
+        ctx.translate(cx,cy); 
+        ctx.rotate(start + slice/2); 
+        ctx.textAlign = 'right'; 
+        ctx.fillStyle = '#2d1b2e'; 
+        ctx.font = 'bold 16px Inter'; 
+        ctx.fillText(it, r-25, 6); 
+        ctx.restore();
+      });
+      
+      // Enhanced center
+      const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60);
+      gradient.addColorStop(0, '#fff');
+      gradient.addColorStop(1, '#ffb6c1');
+      
+      ctx.beginPath(); 
+      ctx.arc(cx,cy,60,0,2*Math.PI);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,96,146,0.5)';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      
+      ctx.fillStyle = '#2d1b2e';
+      ctx.font = '700 20px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText('❤️',cx,cy-8);
+      ctx.font = '600 14px Inter';
+      ctx.fillText('Spin',cx,cy+12);
+    }
+    drawWheel();
+
+    let isSpinning=false;
+    document.getElementById('spin').addEventListener('click',async()=>{
+      if(isSpinning) return; 
+      isSpinning=true; 
+      playPop();
+      
+      const spins = Math.floor(Math.random()*4)+6; // more spins
+      const sector = Math.floor(Math.random()*wheelItems.length);
+      const finalAngle = (spins*2*Math.PI) + (sector * (2*Math.PI/wheelItems.length)) + (Math.random() * (2*Math.PI/wheelItems.length));
+      const duration = 5000; // longer duration
+      
+      animateRotation(finalAngle,duration).then(()=>{
+        isSpinning=false; 
+        const result=wheelItems[sector]; 
+        document.getElementById('wheelResult').textContent=`Result: ${result}`;
+        showPopup(`<h3 style='color:var(--text-primary);font-family:Dancing Script,cursive'>${result}</h3><p class='text-muted'>A sweet outcome awaits... 💕</p>`);
+        spawnHeart(50, 30, 36);
+      });
+    });
+
+    function animateRotation(target, duration){
+      const el = wheelCanvas; 
+      const start = performance.now(); 
+      const from = (parseFloat(el.dataset.rot) || 0);
+      
+      return new Promise(res=>{
+        function frame(t){
+          const p = Math.min(1,(t-start)/duration);
+          const eased = 1 - Math.pow(1-p,4); // smoother easing
+          const cur = from + (target-from)*eased;
+          el.style.transform = `rotate(${cur}rad)`;
+          if(p<1) requestAnimationFrame(frame); 
+          else {
+            el.dataset.rot = cur; 
+            res();
+          }
+        }
+        requestAnimationFrame(frame);
+      });
+    }
+
+    /* -------------------- Quiz & love meter ------------------------------ */
+    document.querySelectorAll('.quizAns').forEach(b=>b.addEventListener('click',(e)=>{
+      const answer = e.target.textContent;
+      let response = "Correct — Bazila, always 💖";
+      if(answer === "Moomin") response = "Sweet, but we know Bazila wins! 😉";
+      if(answer === "Everyone") response = "Nice try, but Bazila is #1! 💕";
+      
+      document.getElementById('quizResult').textContent = response;
+      spawnHeart(null,null,28);
+    }));
+
+    const loveMeter = document.getElementById('loveMeter');
+    const loveMeterText = document.getElementById('loveMeterText');
+    
+    function updateLoveText(v){
+      if(v>95) return 'Infinite love detected! 🌟✨';
+      if(v>85) return 'So much love overflowing 💖';
+      if(v>70) return 'Heart full of love 💕';
+      if(v>50) return 'Warm fuzzy feelings 🥰';
+      if(v>30) return 'Growing love 💗';
+      if(v>10) return 'Cuddles needed 🤗';
+      return 'Need more hugs! 🫂';
+    }
+    
+    loveMeter.addEventListener('input',e=>{
+      const value = e.target.value;
+      loveMeterText.textContent = updateLoveText(value);
+      if(value > 90) spawnHeart(null, null, 24);
+    });
+    loveMeterText.textContent=updateLoveText(loveMeter.value);
+
+    /* ----------------------- keyboard easter egg ------------------------- */
+    const keyBuffer=[]; const secret='zulaikha';
+    window.addEventListener('keydown',e=>{
+      keyBuffer.push(e.key.toLowerCase()); 
+      if(keyBuffer.length>secret.length) keyBuffer.shift();
+      if(keyBuffer.join('').includes(secret)) triggerZulaikha();
+    });
+    
+    function triggerZulaikha(){
+      showPopup(`<div style="font-family:Dancing Script,cursive;font-size:22px;color:var(--text-primary)">Zulaikha —<br/>
+      You are the poem I never finish writing. <br/><br/>
+      <span style="color:var(--accent)">Forever, Moomin 💕</span></div>`);
+      for(let i=0;i<30;i++) {
+        setTimeout(() => spawnHeart(null, null, 28 + Math.random() * 12), i * 100);
+      }
+    }
+
+    /* ------------------------- helper utilities ------------------------- */
+    function escapeHtml(s){
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    /* ------------------------ Audio: user-upload + webaudio ---------------- */
+    let bgAudio=null; 
+    let audioFileUrl=null; 
+    const audioToggle=document.getElementById('audioToggle');
+    
+    audioToggle.addEventListener('click',()=>{
+      if(!bgAudio){
+        const f=inputFile('Upload a music file (mp3) for background music');
+        f.then(file=>{
+          if(!file) return; 
+          audioFileUrl=URL.createObjectURL(file); 
+          bgAudio=new Audio(audioFileUrl); 
+          bgAudio.loop=true; 
+          bgAudio.volume=0.3; 
+          bgAudio.play(); 
+          audioToggle.textContent='Music: ON';
+        });
+      } else {
+        if(bgAudio.paused){
+          bgAudio.play();
+          audioToggle.textContent='Music: ON'
+        } else {
+          bgAudio.pause();
+          audioToggle.textContent='Music: OFF'
+        }
+      }
+    });
+    
+    function inputFile(promptText){
+      return new Promise(res=>{
+        const inp=document.createElement('input');
+        inp.type='file';
+        inp.accept='audio/*';
+        inp.onchange=()=>res(inp.files[0]);
+        inp.click();
+        setTimeout(()=>res(null),60000);
+      });
+    }
+
+    /* ------------------ Enhanced sound effect for clicks --------------------- */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playPop(){
+      try{
+        const o = audioCtx.createOscillator(); 
+        const g = audioCtx.createGain();
+        o.type='sine'; 
+        o.frequency.value=520; 
+        g.gain.value=0.0001; 
+        o.connect(g); 
+        g.connect(audioCtx.destination);
+        o.start(); 
+        g.gain.exponentialRampToValueAtTime(0.08,audioCtx.currentTime+0.01); 
+        g.gain.exponentialRampToValueAtTime(0.00001,audioCtx.currentTime+0.15); 
+        o.stop(audioCtx.currentTime+0.2);
+      }catch(e){/* ignore */}
+    }
+
+    document.addEventListener('click',e=>{
+      if(e.target.closest('.glowHeart') || 
+         e.target.closest('.moodBtn') || 
+         e.target.closest('.btn-primary') ||
+         e.target.closest('.navbtn')) {
+        playPop();
+      }
+    });
+
+    /* -------------------- Initial setup -------------------------- */
+    document.title = 'Moomin ❤️ Bazila';
+    noteDate.value = new Date().toISOString().slice(0,10);
+
+    // Helper for adding custom love notes
+    window.addLoveNote = (txt) => { 
+      notes.push(txt); 
+      localStorage.setItem('custom_notes', JSON.stringify([txt].concat(JSON.parse(localStorage.getItem('custom_notes')||'[]')))); 
+      renderSlides(); 
+    };
+
+    // Reset utility
+    window._resetLoveSite = ()=>{
+      if(confirm('Reset local storage for this love site?')) {
+        localStorage.clear();
+        location.reload();
+      } 
+    };
+
+    // Close popup on outside click
+    popup.addEventListener('click', (e)=>{ 
+      if(e.target===popup) popup.classList.remove('show'); 
+    });
+
+    // Welcome heart
+    setTimeout(()=>spawnHeart(null,null,40),1200);
+
+    /* ------------------------- Enhanced Countdown helpers ------------------------- */
+    function daysUntilMonthDay(month, day){
+      const now = new Date();
+      let year = now.getFullYear();
+      let target = new Date(year, month-1, day);
+      if(target < new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
+        target = new Date(year+1, month-1, day);
+      }
+      const diff = Math.ceil((target - new Date(now.getFullYear(), now.getMonth(), now.getDate()))/86400000);
+      return {days:diff, date: target};
+    }
+
+    function nextSpecialDate(){
+      const today=new Date(); 
+      const candidates = specialDates.map(sd=>{
+        const [y,m,d] = sd.date.split('-').map(Number);
+        let year = (y && y>=today.getFullYear()) ? y : today.getFullYear();
+        let dt = new Date(year, m-1, d);
+        if(dt < today) dt = new Date(dt.getFullYear()+1, m-1, d);
+        return {sd,dt};
+      }).sort((a,b)=>a.dt - b.dt);
+      return candidates[0];
+    }
+
+    function updateCountdowns(){
+      const next = nextSpecialDate();
+      if(next){
+        const days = Math.ceil((next.dt - new Date())/86400000);
+        document.getElementById('countdownNext').textContent = `${days} day${days !== 1 ? 's' : ''} until ${next.sd.title}`;
+      }
+      
+      const ann = daysUntilMonthDay(3,9);
+      document.getElementById('countdownAnniversary').textContent = `${ann.days} day${ann.days !== 1 ? 's' : ''} until Anniversary`;
+      
+      const bday = daysUntilMonthDay(4,10);
+      document.getElementById('countdownBirthday').textContent = `${bday.days} day${bday.days !== 1 ? 's' : ''} until Moomin's Birthday`;
+    }
+    
+    updateCountdowns(); 
+    setInterval(updateCountdowns, 60*60*1000); // Update every hour
+
+  </script>
+</body>
+</html>
