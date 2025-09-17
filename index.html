@@ -6,108 +6,578 @@
   <title>Moomin ❤️ Bazila — A Tiny Love App</title>
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     /* Mobile-first base styles */
     :root{
       --bg-1: linear-gradient(135deg,#ffd6e8 0%, #ffeed6 40%, #f3e8ff 100%);
-      --card: rgba(255,255,255,0.92);
+      --card: rgba(255,255,255,0.95);
+      --card-hover: rgba(255,255,255,0.98);
       --accent: rgba(255,96,146,0.95);
-      --glass: rgba(255,255,255,0.55);
-      --shadow: 0 8px 20px rgba(99,35,80,0.12);
-      --muted:#6b5b6e;
+      --accent-light: rgba(255,96,146,0.1);
+      --glass: rgba(255,255,255,0.65);
+      --shadow: 0 8px 32px rgba(99,35,80,0.15);
+      --shadow-hover: 0 12px 40px rgba(99,35,80,0.2);
+      --text-primary: #2d1b2e;
+      --text-secondary: #5a4a5d;
+      --text-muted: #8b7a8e;
+      --border: rgba(255,96,146,0.15);
       --heart-size: 36px;
     }
 
     html,body{height:100%;}
     body{
-      margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-      background:var(--bg-1);min-height:100vh;display:flex;flex-direction:column;color:#322; -webkit-font-smoothing:antialiased;
-      overflow-y:auto;
+      margin:0;
+      font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background:var(--bg-1);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      color:var(--text-primary);
+      -webkit-font-smoothing:antialiased;
+      font-weight:400;
+      line-height:1.5;
+      overflow-x:hidden;
     }
 
-    header{position:sticky;top:0;backdrop-filter:blur(6px);background:linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.05));padding:.8rem 1rem;display:flex;align-items:center;gap:.6rem;z-index:50}
-    .brand{display:flex;align-items:center;gap:.6rem}
-    .logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#fff7fb,#ffdff0);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
-    .logo .mini{font-family:'Dancing Script',cursive;font-size:18px;color:var(--accent)}
-    h1{font-family:'Dancing Script',cursive;margin:0;font-size:18px}
-    .sub{font-size:12px;color:var(--muted)}
+    /* Typography improvements */
+    h1, h2, h3 { color: var(--text-primary); font-weight: 600; }
+    .text-secondary { color: var(--text-secondary); }
+    .text-muted { color: var(--text-muted); }
 
-    main{padding:1rem;flex:1;display:flex;flex-direction:column;gap:1rem}
+    header{
+      position:sticky;
+      top:0;
+      backdrop-filter:blur(12px);
+      background:linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1));
+      padding:1rem 1.2rem;
+      display:flex;
+      align-items:center;
+      gap:.8rem;
+      z-index:50;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand{display:flex;align-items:center;gap:.8rem}
+    .logo{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      background:linear-gradient(135deg,#fff7fb,#ffdff0);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow);
+      transition: transform 0.2s ease;
+    }
+    .logo:hover { transform: scale(1.05); }
+    .logo .mini{font-family:'Dancing Script',cursive;font-size:20px;color:var(--accent);font-weight:700}
+    h1{font-family:'Dancing Script',cursive;margin:0;font-size:20px;color:var(--text-primary)}
+    .sub{font-size:13px;color:var(--text-secondary);font-weight:500}
 
-    /* card layout */
-    .card{background:var(--card);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
-    .bigcard{padding:16px;border-radius:18px}
+    main{padding:1.2rem;flex:1;display:flex;flex-direction:column;gap:1.2rem;max-width:100%}
 
-    /* navigation */
-    nav{display:flex;gap:.6rem;overflow:auto}
-    .navbtn{flex:1;min-width:84px;padding:.6rem .8rem;border-radius:12px;border:none;background:linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.35));font-weight:600}
-    .navbtn:active{transform:scale(.99)}
+    /* Enhanced card layout */
+    .card{
+      background:var(--card);
+      border-radius:18px;
+      padding:1rem;
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card:hover {
+      background: var(--card-hover);
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+    .bigcard{padding:1.5rem;border-radius:22px}
 
-    /* Notes */
-    #notesList{display:flex;flex-direction:column;gap:.6rem}
-    .noteRow{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem}
-    .noteText{flex:1;font-size:14px}
-    .noteMeta{font-size:12px;color:var(--muted)}
+    /* Enhanced navigation */
+    nav{display:flex;gap:.8rem;overflow-x:auto;padding:.2rem 0;scrollbar-width:none}
+    nav::-webkit-scrollbar{display:none}
+    .navbtn{
+      flex:1;
+      min-width:90px;
+      padding:.8rem 1rem;
+      border-radius:14px;
+      border:none;
+      background:linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
+      font-weight:600;
+      font-size:14px;
+      color:var(--text-primary);
+      transition: all 0.3s ease;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .navbtn:hover{
+      background:linear-gradient(135deg, var(--accent), rgba(255,96,146,0.8));
+      color:white;
+      transform:translateY(-1px);
+      box-shadow:var(--shadow);
+    }
+    .navbtn:active{transform:scale(.98)}
 
-    /* Mood selector */
-    .moods{display:flex;gap:.4rem;flex-wrap:wrap}
-    .moodBtn{padding:.45rem .6rem;border-radius:12px;border:1px solid rgba(0,0,0,0.06);background:transparent}
+    /* REDESIGNED DAILY NOTES SECTION */
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    
+    .notes-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'Dancing Script', cursive;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      font-size: 14px;
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: inherit;
+      background: rgba(255,255,255,0.8);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .mood-section {
+      margin: 1.2rem 0;
+    }
+
+    .moods {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 1rem;
+      background: linear-gradient(135deg, rgba(255,240,250,0.6), rgba(255,235,245,0.4));
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .moodBtn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      background: white;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .moodBtn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(255,96,146,0.3);
+    }
+
+    .moodBtn.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      transform: scale(1.1);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-primary {
+      flex: 2;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(135deg, var(--accent), rgba(255,96,146,0.8));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,96,146,0.4);
+    }
+
+    .btn-secondary {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,240,250,0.8));
+      color: var(--text-primary);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, rgba(255,96,146,0.1), rgba(255,240,250,0.9));
+      border-color: var(--accent);
+    }
+
+    /* Enhanced Notes List */
+    .notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .note-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,248,252,0.8));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.2rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .note-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .note-card:hover {
+      transform: translateX(4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .note-card:hover::before {
+      opacity: 1;
+    }
+
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .note-date {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .note-mood {
+      font-size: 24px;
+      opacity: 0.8;
+    }
+
+    .note-text {
+      color: var(--text-secondary);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ENHANCED GALLERY WITH EXPANDABLE IMAGES */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      padding: 0.5rem 0;
+    }
+
+    .image-container {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .image-container:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(255,96,146,0.2);
+    }
+
+    .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .image-container:hover img {
+      transform: scale(1.1);
+    }
+
+    /* Image Modal */
+    .image-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .image-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 12px;
+      overflow: hidden;
+      transform: scale(0.8);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .image-modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
+
+    .modal-close:hover {
+      background: white;
+      transform: scale(1.1);
+    }
 
     /* Slideshow */
-    .slideshow{position:relative;overflow:hidden;border-radius:12px}
-    .slide{min-height:110px;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:'Dancing Script',cursive;font-size:18px}
-    .slideWrap{display:flex;transition:transform .6s cubic-bezier(.22,.9,.3,1)}
+    .slideshow{position:relative;overflow:hidden;border-radius:16px;background:linear-gradient(135deg, rgba(255,240,250,0.8), rgba(255,235,245,0.6))}
+    .slide{
+      min-height:120px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:1.5rem;
+      font-family:'Dancing Script',cursive;
+      font-size:20px;
+      color:var(--text-primary);
+      text-align:center;
+      font-weight:600;
+    }
+    .slideWrap{display:flex;transition:transform .8s cubic-bezier(.22,.9,.3,1)}
 
     /* Quotes */
-    .quotes{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-    .quoteCard{padding:.8rem;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,240,250,0.6));font-size:13px}
-
-    /* gallery */
-    #galleryGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-    .polaroid{background:linear-gradient(180deg,#fff,#fff8f8);padding:8px;border-radius:8px;display:block;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
-    .polaroid img{display:block;width:100%;height:100px;object-fit:cover;border-radius:6px}
-
-    /* timeline */
-    .timeline{display:flex;flex-direction:column;gap:.8rem}
-    .tItem{display:flex;gap:.6rem;align-items:flex-start}
-    .tDot{width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:6px}
-
-    /* wheel */
-    .wheelWrap{display:flex;flex-direction:column;align-items:center;gap:.6rem}
-    canvas#wheel{width:260px;height:260px;border-radius:50%;touch-action:none}
-    .spinBtn{padding:.6rem 1rem;border-radius:999px;border:none;background:linear-gradient(90deg,#ff92b7,#ffd2e8);font-weight:700}
-
-    /* popup */
-    .popup{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:80}
-    .popup.show{display:flex}
-    .popupCard{width:92%;max-width:420px;background:var(--card);padding:16px;border-radius:16px;box-shadow:0 20px 40px rgba(30,20,40,0.18);text-align:center}
-
-    /* small screens fine-tuning */
-    @media (min-width:700px){
-      main{padding:1.6rem}
-      .quotes{grid-template-columns:repeat(3,1fr)}
-      #galleryGrid{grid-template-columns:repeat(4,1fr)}
+    .quotes{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:1rem}
+    .quoteCard{
+      padding:1.2rem;
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,240,250,0.6));
+      font-size:14px;
+      border:1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .quoteCard:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
     }
 
-    /* floating hearts container */
+    /* Timeline */
+    .timeline{display:flex;flex-direction:column;gap:1rem}
+    .tItem{
+      display:flex;
+      gap:1rem;
+      align-items:flex-start;
+      padding:1rem;
+      border-radius:12px;
+      background:rgba(255,255,255,0.6);
+      border:1px solid var(--border);
+      cursor:pointer;
+      transition: all 0.3s ease;
+    }
+    .tItem:hover {
+      background: rgba(255,255,255,0.9);
+      transform: translateX(4px);
+    }
+    .tDot{width:12px;height:12px;border-radius:50%;background:var(--accent);margin-top:8px;box-shadow:0 0 0 4px rgba(255,96,146,0.2)}
+
+    /* Wheel */
+    .wheelWrap{display:flex;flex-direction:column;align-items:center;gap:1rem}
+    canvas#wheel{width:280px;height:280px;border-radius:50%;touch-action:none;box-shadow:var(--shadow)}
+    .spinBtn{
+      padding:1rem 2rem;
+      border-radius:25px;
+      border:none;
+      background:linear-gradient(135deg,#ff92b7,#ffd2e8);
+      font-weight:700;
+      font-size:16px;
+      color:var(--text-primary);
+      cursor:pointer;
+      transition: all 0.3s ease;
+    }
+    .spinBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,146,183,0.4);
+    }
+
+    /* Popup */
+    .popup{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:100;
+      background:rgba(0,0,0,0.5);
+      backdrop-filter:blur(8px);
+    }
+    .popup.show{display:flex}
+    .popupCard{
+      width:92%;
+      max-width:420px;
+      background:var(--card);
+      padding:2rem;
+      border-radius:20px;
+      box-shadow:0 25px 50px rgba(30,20,40,0.3);
+      text-align:center;
+      border:1px solid var(--border);
+      transform:scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    .popup.show .popupCard {
+      transform: scale(1);
+    }
+
+    /* Responsive improvements */
+    @media (min-width:700px){
+      main{padding:2rem;max-width:1200px;margin:0 auto}
+      .gallery-grid{grid-template-columns:repeat(auto-fit, minmax(180px, 1fr))}
+      .quotes{grid-template-columns:repeat(3,1fr)}
+      .form-actions { max-width: 400px; }
+    }
+
+    @media (max-width: 480px) {
+      .form-actions {
+        flex-direction: column;
+      }
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      canvas#wheel { width: 240px; height: 240px; }
+    }
+
+    /* Floating hearts container */
     #floatLayer{position:fixed;inset:0;pointer-events:none;z-index:10}
 
-    /* watermark */
-    footer{font-size:12px;text-align:center;padding:12px;color:var(--muted)}
+    /* Footer */
+    footer{font-size:13px;text-align:center;padding:1.5rem;color:var(--text-muted);background:rgba(255,255,255,0.3);margin-top:2rem}
 
-    /* small helpers */
-    .row{display:flex;gap:.6rem;align-items:center}
+    /* Helper classes */
+    .row{display:flex;gap:.8rem;align-items:center}
     .center{text-align:center}
-    .tiny{font-size:12px;color:var(--muted)}
+    .glowHeart{
+      font-size:16px;
+      padding:8px 16px;
+      border-radius:20px;
+      background:linear-gradient(135deg, rgba(255,96,146,0.15), rgba(255,183,197,0.1));
+      box-shadow:0 6px 20px rgba(255,96,146,0.1);
+      color:var(--text-primary);
+      font-weight:600;
+    }
 
-    /* glowing heart */
-    .glowHeart{font-size:14px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg, rgba(255,96,146,0.12), rgba(255,183,197,0.08));box-shadow:0 6px 20px rgba(255,96,146,0.08)}
+    /* Animations */
+    .pop{transform-origin:center;animation:pop .4s cubic-bezier(0.4, 0, 0.2, 1)}
+    @keyframes pop{
+      0%{transform:scale(.8);opacity:0}
+      60%{transform:scale(1.05);opacity:1}
+      100%{transform:scale(1)}
+    }
 
-    /* subtle animations */
-    .pop{transform-origin:center;animation:pop .35s ease}
-    @keyframes pop{0%{transform:scale(.9);opacity:0}60%{transform:scale(1.03);opacity:1}100%{transform:scale(1)}}
+    /* Upload area styling */
+    .upload-area {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.6);
+      border-radius: 12px;
+      border: 2px dashed var(--border);
+    }
+
+    .upload-area input[type="file"] {
+      flex: 1;
+      padding: 0.5rem;
+      font-size: 14px;
+    }
 
   </style>
 </head>
@@ -139,112 +609,124 @@
 
     <!-- HOME -->
     <section id="home" class="bigcard card">
-      <div class="row" style="justify-content:space-between;align-items:center">
+      <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:wrap">
         <div>
           <div class="glowHeart">Moomin ❤️ Bazila</div>
-          <div class="tiny">Swirl the heart wheel, read a note, or check memories.</div>
+          <div class="text-muted" style="margin-top:0.5rem">Swirl the heart wheel, read a note, or check memories.</div>
         </div>
         <div class="center">
-          <div id="countdownNext" class="tiny"></div>
-          <div id="countdownAnniversary" class="tiny"></div>
-          <div id="countdownBirthday" class="tiny"></div>
-          <div class="tiny">Next special days</div>
+          <div id="countdownNext" class="text-muted" style="font-size:12px"></div>
+          <div id="countdownAnniversary" class="text-muted" style="font-size:12px"></div>
+          <div id="countdownBirthday" class="text-muted" style="font-size:12px"></div>
+          <div class="text-muted" style="font-size:12px;margin-top:0.5rem">Next special days</div>
         </div>
       </div>
 
       <!-- Slideshow of love notes -->
-      <div style="margin-top:12px">
+      <div style="margin-top:1.5rem">
         <div class="slideshow card" id="loveNotesWrap">
           <div class="slideWrap" id="slideWrap"></div>
         </div>
       </div>
 
       <!-- Quotes -->
-      <div style="margin-top:12px" class="card">
-        <div style="font-weight:700;margin-bottom:8px">Romantic Quotes</div>
+      <div style="margin-top:1.5rem" class="card">
+        <div style="font-weight:700;margin-bottom:1rem;color:var(--text-primary);font-size:18px">Romantic Quotes</div>
         <div class="quotes" id="quotesGrid"></div>
       </div>
     </section>
 
-    <!-- NOTES -->
+    <!-- REDESIGNED NOTES SECTION -->
     <section id="notes" class="card" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <strong>Daily Notes</strong>
-        <div class="tiny">Saved locally on this device</div>
+      <div class="notes-header">
+        <div class="notes-title">Daily Love Notes</div>
+        <div class="text-muted" style="font-size:12px">Saved locally on this device</div>
       </div>
 
-      <form id="noteForm" style="margin-top:12px;display:flex;gap:.6rem;flex-direction:column">
-        <input type="date" id="noteDate" style="padding:.6rem;border-radius:10px;border:1px solid rgba(0,0,0,0.06)" />
-        <textarea id="noteContent" rows="4" placeholder="Write a small love note, mood or memory..." style="border-radius:10px;padding:.6rem;border:1px solid rgba(0,0,0,0.06)"></textarea>
-        <div class="moods" id="moodPicker">
-          <!-- emojis injected -->
+      <form id="noteForm">
+        <div class="form-group">
+          <label class="form-label" for="noteDate">Date</label>
+          <input type="date" id="noteDate" class="form-input" />
         </div>
-        <div class="row" style="justify-content:space-between">
-          <button type="submit" class="navbtn">Save Note</button>
-          <button type="button" id="clearNotes" class="navbtn" style="background:linear-gradient(90deg,#fff,#ffd6e8)">Clear</button>
+
+        <div class="form-group">
+          <label class="form-label" for="noteContent">Your Love Note</label>
+          <textarea id="noteContent" class="form-textarea" placeholder="Write a beautiful love note, share your feelings, or capture a special memory..."></textarea>
+        </div>
+
+        <div class="mood-section">
+          <label class="form-label">How are you feeling?</label>
+          <div class="moods" id="moodPicker">
+            <!-- emojis injected by JavaScript -->
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Save Love Note</button>
+          <button type="button" id="clearNotes" class="btn-secondary">Clear All</button>
         </div>
       </form>
 
-      <div id="notesList" style="margin-top:12px"></div>
+      <div class="notes-list" id="notesList"></div>
     </section>
 
-    <!-- GALLERY -->
+    <!-- ENHANCED GALLERY -->
     <section id="gallery" class="card" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <strong>Photo Library</strong>
-        <div class="tiny">No captions — just the memories</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h2 style="margin:0;font-size:1.5rem;font-family:'Dancing Script',cursive">Photo Memories</h2>
+        <div class="text-muted" style="font-size:12px">Click to expand</div>
       </div>
-      <div style="margin-top:8px" class="row">
-        <input type="file" id="addImages" accept="image/*" multiple style="flex:1" />
-        <button id="clearGallery" class="navbtn tiny" style="width:110px">Clear</button>
+      
+      <div class="upload-area">
+        <input type="file" id="addImages" accept="image/*" multiple />
+        <button id="clearGallery" class="btn-secondary" style="white-space:nowrap">Clear All</button>
       </div>
 
-      <!-- Pre-filled placeholders for 6 images. In your VS Code project, put your images in folder `images/` named photo1.jpg .. photo6.jpg -->
-      <div id="galleryGrid" style="margin-top:12px">
-        <div class="polaroid"><img src="images/photo1.jpg" alt="Photo 1"></div>
-        <div class="polaroid"><img src="images/photo2.jpg" alt="Photo 2"></div>
-        <div class="polaroid"><img src="images/photo3.jpg" alt="Photo 3"></div>
-        <div class="polaroid"><img src="images/photo4.jpg" alt="Photo 4"></div>
-        <div class="polaroid"><img src="images/photo5.jpg" alt="Photo 5"></div>
-        <div class="polaroid"><img src="images/photo6.jpg" alt="Photo 6"></div>
+      <div class="gallery-grid" id="galleryGrid">
+        <div class="image-container"><img src="images/photo1.jpg" alt="Photo 1"></div>
+        <div class="image-container"><img src="images/photo2.jpg" alt="Photo 2"></div>
+        <div class="image-container"><img src="images/photo3.jpg" alt="Photo 3"></div>
+        <div class="image-container"><img src="images/photo4.jpg" alt="Photo 4"></div>
+        <div class="image-container"><img src="images/photo5.jpg" alt="Photo 5"></div>
+        <div class="image-container"><img src="images/photo6.jpg" alt="Photo 6"></div>
       </div>
     </section>
 
     <!-- TIMELINE -->
     <section id="timeline" class="card" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <strong>Important Dates</strong>
-        <div class="tiny">Tap a card to view memory</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h2 style="margin:0;font-size:1.5rem;font-family:'Dancing Script',cursive">Important Dates</h2>
+        <div class="text-muted" style="font-size:12px">Tap a card to view memory</div>
       </div>
 
-      <div class="timeline" id="timelineList" style="margin-top:12px"></div>
+      <div class="timeline" id="timelineList"></div>
     </section>
 
-    <!-- EXTRAS: wheel, quiz, love meter -->
+    <!-- EXTRAS -->
     <section id="extras" class="card" style="display:none">
-      <div style="display:flex;gap:.6rem;flex-direction:column">
+      <div style="display:flex;gap:1.5rem;flex-direction:column">
 
         <div class="card wheelWrap">
-          <canvas id="wheel" width="520" height="520"></canvas>
+          <canvas id="wheel" width="560" height="560"></canvas>
           <button id="spin" class="spinBtn">Spin the Heart</button>
-          <div id="wheelResult" class="tiny center"></div>
+          <div id="wheelResult" class="text-muted center" style="margin-top:1rem"></div>
         </div>
 
         <div class="card">
-          <strong>Love Quiz</strong>
-          <div style="margin-top:8px">Who do you love the most?</div>
-          <div style="display:flex;gap:.6rem;margin-top:8px">
+          <h3>Love Quiz</h3>
+          <div style="margin:1rem 0;color:var(--text-secondary)">Who do you love the most?</div>
+          <div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap">
             <button class="navbtn quizAns">Moomin</button>
             <button class="navbtn quizAns">Bazila</button>
             <button class="navbtn quizAns">Everyone</button>
           </div>
-          <div id="quizResult" class="tiny center" style="margin-top:8px"></div>
+          <div id="quizResult" class="text-muted center" style="margin-top:1rem"></div>
         </div>
 
         <div class="card">
-          <strong>Love Meter</strong>
-          <input type="range" id="loveMeter" min="0" max="100" value="88" />
-          <div id="loveMeterText" class="tiny center" style="margin-top:8px"></div>
+          <h3>Love Meter</h3>
+          <input type="range" id="loveMeter" min="0" max="100" value="88" style="width:100%;margin:1rem 0" />
+          <div id="loveMeterText" class="text-muted center"></div>
         </div>
 
       </div>
@@ -252,13 +734,21 @@
 
   </main>
 
+  <!-- Image Modal -->
+  <div id="imageModal" class="image-modal">
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <img id="modalImage" src="" alt="Expanded photo">
+    </div>
+  </div>
+
   <footer class="card">Moomin ♥ Bazila — keep this page safe on your phone. Tip: Install as a PWA or add to home screen for app-like feel.</footer>
 
-  <!-- popup container -->
+  <!-- Popup container -->
   <div id="popup" class="popup" role="dialog" aria-modal="true">
     <div class="popupCard">
       <div id="popupContent"></div>
-      <div style="margin-top:12px"><button id="closePopup" class="navbtn">Close</button></div>
+      <div style="margin-top:1.5rem"><button id="closePopup" class="btn-primary">Close</button></div>
     </div>
   </div>
 
@@ -269,352 +759,3 @@
       {date:'2025-04-10',title:`Moomin's Birthday`, message:`Happy birthday, my love — let's celebrate!`},
       {date:'2024-03-09',title:`Anniversary`, message:`Our journey began — 9th March 2024`},
       {date:'2025-05-24',title:`First kiss`, message:`That shy, bright moment on 24 May 2025`},
-      {date:'2025-06-28',title:`First lip kiss`, message:`Our first lip kiss — the world paused.`}
-    ];
-
-    const defaultLoveNotes = [
-      "I find new reasons to fall for you every morning.",
-      "Sometimes I smile for no reason, then I remember you.",
-      "If I had a flower for every time I thought of you..." ,
-      "Your laugh is my favourite melody."
-    ];
-
-    const quotes = [
-      "Love is composed of a single soul inhabiting two bodies.",
-      "I have found the one my heart loves.",
-      "You are my today and all of my tomorrows.",
-      "Where there is love there is life."
-    ];
-
-    /* ---------------------- Floating hearts (Easter glow) --------------------- */
-    const floatLayer = document.getElementById('floatLayer');
-    function spawnHeart(x, y, size=24, color=null){
-      const el=document.createElement('div');
-      el.innerHTML='❤';
-      el.style.position='absolute';
-      el.style.left=(x|| (Math.random()*100))+'%';
-      el.style.top=(y|| (Math.random()*80))+'%';
-      el.style.fontSize=size+'px';
-      el.style.opacity='0.9';
-      el.style.pointerEvents='none';
-      el.style.transform=`translate(-50%,-50%)`;
-      el.style.animation=`floatUp ${6+Math.random()*6}s linear forwards`;
-      el.style.filter='drop-shadow(0 6px 12px rgba(255,80,140,0.12))';
-      floatLayer.appendChild(el);
-      setTimeout(()=>el.remove(),12000);
-    }
-    const floatStyle = document.createElement('style');
-    floatStyle.innerHTML='@keyframes floatUp{0%{transform:translate(-50%,10px) scale(1);opacity:1}100%{transform:translate(-50%,-160px) scale(.7);opacity:0}}';
-    document.head.appendChild(floatStyle);
-
-    // gentle ongoing drift
-    setInterval(()=>spawnHeart(),1400);
-
-    /* ----------------------- Routing between sections ---------------------- */
-    document.querySelectorAll('[data-show]').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        showSection(btn.dataset.show);
-      });
-    });
-    function showSection(id){
-      document.querySelectorAll('main section').forEach(s=>s.style.display='none');
-      const el=document.getElementById(id);
-      if(el) el.style.display='block';
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    /* ----------------------- Love notes slideshow -------------------------- */
-    const slideWrap = document.getElementById('slideWrap');
-    let notes = JSON.parse(localStorage.getItem('love_notes')) || defaultLoveNotes.slice();
-    function renderSlides(){
-      slideWrap.innerHTML='';
-      notes.forEach(n=>{
-        const d=document.createElement('div');d.className='slide';d.textContent=n;slideWrap.appendChild(d);
-      });
-      // clone to make sliding loop feel nicer
-      const slides=slideWrap.children.length;
-      let idx=0;
-      function advance(){
-        idx=(idx+1)%slides;
-        slideWrap.style.transform=`translateX(-${idx*100}%)`;
-      }
-      setInterval(advance,4200);
-    }
-    renderSlides();
-
-    /* ------------------------ Quotes grid --------------------------- */
-    const quotesGrid = document.getElementById('quotesGrid');
-    quotes.forEach(q=>{
-      const c=document.createElement('div');c.className='quoteCard';c.innerHTML=`<div style='font-family:Dancing Script,cursive'>"${q}"</div><div style='font-size:11px;margin-top:6px;color:var(--muted)'>— love library</div>`;quotesGrid.appendChild(c);
-    });
-
-    /* ---------------------- Daily notes (localStorage) --------------------- */
-    const noteForm = document.getElementById('noteForm');
-    const noteDate = document.getElementById('noteDate');
-    const noteContent = document.getElementById('noteContent');
-    const moodPicker = document.getElementById('moodPicker');
-    const notesList = document.getElementById('notesList');
-
-    const moods = ['😍','😊','😴','😔','😡','🤗','🤩'];
-    let selectedMood = moods[0];
-    moods.forEach(m=>{
-      const b=document.createElement('button');b.type='button';b.className='moodBtn';b.innerText=m;b.addEventListener('click',()=>{selectedMood=m;document.querySelectorAll('.moodBtn').forEach(x=>x.style.outline='none');b.style.outline='2px solid rgba(255,96,146,0.25)'});moodPicker.appendChild(b);
-    });
-
-    function loadNotes(){
-      const arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
-      notesList.innerHTML='';
-      arr.slice().reverse().forEach((n,i)=>{
-        const r=document.createElement('div');r.className='noteRow card';
-        r.innerHTML=`<div class='noteText'>${escapeHtml(n.text)}</div><div class='noteMeta'>${n.date} · ${n.mood}</div>`;
-        notesList.appendChild(r);
-      });
-    }
-    noteForm.addEventListener('submit',e=>{
-      e.preventDefault();
-      const d = noteDate.value || new Date().toISOString().slice(0,10);
-      const text = noteContent.value.trim();
-      if(!text) return alert('Write a little note!');
-      const arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
-      arr.push({date:d,text:text,mood:selectedMood});
-      localStorage.setItem('diary_notes',JSON.stringify(arr));
-      noteContent.value='';noteDate.value='';
-      loadNotes();
-    });
-    document.getElementById('clearNotes').addEventListener('click',()=>{if(confirm('Clear all notes from this device?')){localStorage.removeItem('diary_notes');loadNotes();}});
-    loadNotes();
-
-    /* ---------------------- Gallery (images save to localStorage) ------------ */
-    const addImages = document.getElementById('addImages');
-    const galleryGrid = document.getElementById('galleryGrid');
-    function renderGallery(){
-      const imgs = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
-      if(imgs.length>0){
-        galleryGrid.innerHTML='';
-        imgs.forEach((d,idx)=>{
-          const card=document.createElement('div');card.className='polaroid';
-          const img=document.createElement('img');img.src=d;card.appendChild(img);
-          galleryGrid.appendChild(card);
-        });
-      } // otherwise leave the 6 placeholders present in HTML for direct file references
-    }
-    addImages.addEventListener('change',async(e)=>{
-      const files=Array.from(e.target.files).slice(0,30);
-      const arr = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
-      for(const f of files){
-        const data = await fileToDataUrl(f);
-        arr.push(data);
-      }
-      localStorage.setItem('gallery_imgs',JSON.stringify(arr));
-      renderGallery();
-      addImages.value='';
-    });
-    document.getElementById('clearGallery').addEventListener('click',()=>{if(confirm('Clear gallery images?')){localStorage.removeItem('gallery_imgs');renderGallery();}});
-    function fileToDataUrl(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
-    renderGallery();
-
-    /* ----------------------- Timeline & special dates ---------------------- */
-    const timelineList = document.getElementById('timelineList');
-    function renderTimeline(){
-      timelineList.innerHTML='';
-      specialDates.forEach(sd=>{
-        const item=document.createElement('div');item.className='tItem card';
-        item.innerHTML=`<div style='width:56px'><div class='tDot'></div></div><div style='flex:1'><strong>${sd.title}</strong><div class='tiny'>${sd.date}</div></div>`;
-        item.addEventListener('click',()=>showPopup(`<h3>${sd.title}</h3><p class='tiny'>${sd.date}</p><p>${sd.message}</p>`));
-        timelineList.appendChild(item);
-      });
-    }
-    renderTimeline();
-
-    /* ------------------------- Popup util ------------------------------- */
-    const popup = document.getElementById('popup');
-    const popupContent = document.getElementById('popupContent');
-    document.getElementById('closePopup').addEventListener('click',()=>popup.classList.remove('show'));
-    function showPopup(html){popupContent.innerHTML=html;popup.classList.add('show');}
-
-    /* ----------------------- Surprise & daily note pop -------------------- */
-    const surpriseBtn = document.getElementById('surpriseBtn');
-    surpriseBtn.addEventListener('click',()=>popRandomNote());
-    function popRandomNote(){
-      const pool = JSON.parse(localStorage.getItem('custom_notes')||'[]').concat(defaultLoveNotes);
-      const sel = pool[Math.floor(Math.random()*pool.length)];
-      showPopup(`<div style='font-family:Dancing Script,cursive;font-size:18px'>${sel}</div>`);
-    }
-
-    // show a new random love note once per day
-    const lastDaily = localStorage.getItem('last_daily_note');
-    const todayKey = new Date().toISOString().slice(0,10);
-    if(lastDaily !== todayKey){
-      popRandomNote();
-      localStorage.setItem('last_daily_note', todayKey);
-    }
-
-    /* ------------------------ Wheel of outcomes -------------------------- */
-    const wheelCanvas = document.getElementById('wheel');
-    const wheelCtx = wheelCanvas.getContext('2d');
-    const wheelItems = ['Kiss','Chocolate','Surprise date','Hug attack','Movie night','Dance till dawn','Whisper a secret','Slow song'];
-    function drawWheel(){
-      const ctx = wheelCtx; const w=wheelCanvas.width; const h=wheelCanvas.height; const cx=w/2,cy=h/2; const r=Math.min(cx,cy)-8;
-      ctx.clearRect(0,0,w,h);
-      const slice = 2*Math.PI / wheelItems.length;
-      wheelItems.forEach((it,i)=>{
-        const start=i*slice; const end=start+slice;
-        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath();
-        ctx.fillStyle = i%2 ? 'rgba(255,200,230,0.95)':'rgba(255,235,245,0.95)';
-        ctx.fill();
-        // text
-        ctx.save(); ctx.translate(cx,cy); ctx.rotate(start + slice/2); ctx.textAlign='right'; ctx.fillStyle='#4a2b3a'; ctx.font='bold 18px Inter'; ctx.fillText(it, r-16, 6); ctx.restore();
-      });
-      // center
-      ctx.beginPath(); ctx.arc(cx,cy,48,0,2*Math.PI);ctx.fillStyle='linear-gradient(white,pink)';ctx.fill();
-      ctx.fillStyle='#4a2b3a';ctx.font='700 18px Inter';ctx.textAlign='center';ctx.fillText('Spin',cx,cy+6);
-    }
-    drawWheel();
-
-    let isSpinning=false;
-    document.getElementById('spin').addEventListener('click',async()=>{
-      if(isSpinning) return; isSpinning=true; playPop();
-      const spins = Math.floor(Math.random()*4)+4; // full spins
-      const sector = Math.floor(Math.random()*wheelItems.length);
-      const finalAngle = (spins*2*Math.PI) + (sector * (2*Math.PI/wheelItems.length)) + (Math.random() * (2*Math.PI/wheelItems.length));
-      const duration=4000;
-      animateRotation(finalAngle,duration).then(()=>{
-        isSpinning=false; const result=wheelItems[sector]; document.getElementById('wheelResult').textContent=`Result: ${result}`; showPopup(`<h3>${result}</h3><p class='tiny'>A sweet outcome awaits...</p>`);
-      });
-    });
-
-    function animateRotation(target, duration){
-      const el = wheelCanvas; const start=performance.now(); const from= (parseFloat(el.dataset.rot)||0);
-      return new Promise(res=>{
-        function frame(t){
-          const p = Math.min(1,(t-start)/duration);
-          const eased = 1 - Math.pow(1-p,3);
-          const cur = from + (target-from)*eased;
-          el.style.transform = `rotate(${cur}rad)`;
-          if(p<1) requestAnimationFrame(frame); else {el.dataset.rot = cur; res();}
-        }
-        requestAnimationFrame(frame);
-      });
-    }
-
-    /* -------------------- Quiz & love meter ------------------------------ */
-    document.querySelectorAll('.quizAns').forEach(b=>b.addEventListener('click',()=>{
-      document.getElementById('quizResult').textContent = "Correct — Bazila, always 💖";
-      spawnHeart(null,null,28);
-    }));
-    const loveMeter = document.getElementById('loveMeter');
-    const loveMeterText = document.getElementById('loveMeterText');
-    function updateLoveText(v){
-      if(v>95) return 'Infinity love detected!';
-      if(v>80) return 'So much love 🌟';
-      if(v>50) return 'Warm fuzzy feelings';
-      if(v>20) return 'Cuddles required';
-      return 'Need more hugs!';
-    }
-    loveMeter.addEventListener('input',e=>loveMeterText.textContent=updateLoveText(e.target.value));
-    loveMeterText.textContent=updateLoveText(loveMeter.value);
-
-    /* ----------------------- keyboard easter egg ------------------------- */
-    const keyBuffer=[]; const secret='zulaikha';
-    window.addEventListener('keydown',e=>{
-      keyBuffer.push(e.key.toLowerCase()); if(keyBuffer.length>secret.length) keyBuffer.shift();
-      if(keyBuffer.join('').includes(secret)) triggerZulaikha();
-    });
-    function triggerZulaikha(){
-      showPopup(`<div style="font-family:Dancing Script,cursive;font-size:18px">Zulaikha —
-      You are the poem I never finish writing. <br/><br/>Forever, Moomin</div>`);
-      for(let i=0;i<24;i++) spawnHeart();
-    }
-
-    /* ------------------------- helper utilities ------------------------- */
-    function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-    /* ------------------------ Audio: user-upload + webaudio ---------------- */
-    let bgAudio=null; let audioFileUrl=null; const audioToggle=document.getElementById('audioToggle');
-    audioToggle.addEventListener('click',()=>{
-      // ask user to upload a track if none
-      if(!bgAudio){
-        const f=inputFile('Upload a music file (mp3) for background music');
-        f.then(file=>{
-          if(!file) return; audioFileUrl=URL.createObjectURL(file); bgAudio=new Audio(audioFileUrl); bgAudio.loop=true; bgAudio.volume=0.25; bgAudio.play(); audioToggle.textContent='Music: ON';
-        });
-      } else {
-        if(bgAudio.paused){bgAudio.play();audioToggle.textContent='Music: ON'} else {bgAudio.pause();audioToggle.textContent='Music: OFF'}
-      }
-    });
-    function inputFile(promptText){
-      return new Promise(res=>{
-        const inp=document.createElement('input');inp.type='file';inp.accept='audio/*';inp.onchange=()=>res(inp.files[0]);inp.click();setTimeout(()=>res(null),60000);
-      });
-    }
-
-    /* ------------------ small sound effect for clicks --------------------- */
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playPop(){
-      try{
-        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-        o.type='sine'; o.frequency.value=420; g.gain.value=0.0001; o.connect(g); g.connect(audioCtx.destination);
-        o.start(); g.gain.exponentialRampToValueAtTime(0.1,audioCtx.currentTime+0.01); g.gain.exponentialRampToValueAtTime(0.00001,audioCtx.currentTime+0.18); o.stop(audioCtx.currentTime+0.22);
-      }catch(e){/* ignore */}
-    }
-
-    document.addEventListener('click',e=>{ if(e.target.closest('.glowHeart') || e.target.closest('.moodBtn')) playPop(); });
-
-    /* -------------------- initial small touches -------------------------- */
-    document.title = 'Moomin ❤️ Bazila';
-    // set today's date default in the note form
-    noteDate.value = new Date().toISOString().slice(0,10);
-
-    // small helper for adding custom love notes to slideshow (optional)
-    window.addLoveNote = (txt) => { notes.push(txt); localStorage.setItem('custom_notes', JSON.stringify([txt].concat(JSON.parse(localStorage.getItem('custom_notes')||'[]')))); renderSlides(); };
-
-    // expose a reset utility on console for debugging
-    window._resetLoveSite = ()=>{ if(confirm('Reset local storage for this love site?')) {localStorage.clear();location.reload();} };
-
-    // small UX: click outside popup to close
-    popup.addEventListener('click', (e)=>{ if(e.target===popup) popup.classList.remove('show'); });
-
-    // greeting for returning
-    setTimeout(()=>spawnHeart(null,null,36),900);
-
-    /* ------------------------- Countdown helpers ------------------------- */
-    function daysUntilMonthDay(month, day){
-      const now = new Date();
-      let year = now.getFullYear();
-      let target = new Date(year, month-1, day);
-      if(target < new Date(now.getFullYear(), now.getMonth(), now.getDate())) target = new Date(year+1, month-1, day);
-      const diff = Math.ceil((target - new Date(now.getFullYear(), now.getMonth(), now.getDate()))/86400000);
-      return {days:diff, date: target};
-    }
-
-    function nextSpecialDate(){
-      const today=new Date(); const candidates = specialDates.map(sd=>{
-        const [y,m,d] = sd.date.split('-').map(Number);
-        // prefer the next occurrence (use year if provided and in future, else compute next occurrence by month/day)
-        let year = (y && y>=today.getFullYear()) ? y : today.getFullYear();
-        let dt = new Date(year, m-1, d);
-        if(dt < today) dt = new Date(dt.getFullYear()+1, m-1, d);
-        return {sd,dt};
-      }).sort((a,b)=>a.dt - b.dt);
-      return candidates[0];
-    }
-
-    function updateCountdowns(){
-      // next special day
-      const next = nextSpecialDate();
-      if(next){
-        const days = Math.ceil((next.dt - new Date())/86400000);
-        document.getElementById('countdownNext').textContent = `${days} day(s) until ${next.sd.title} (${next.sd.date})`;
-      }
-      // anniversary (9 March)
-      const ann = daysUntilMonthDay(3,9);
-      document.getElementById('countdownAnniversary').textContent = `${ann.days} day(s) until Anniversary (Mar 9)`;
-      // moomin's birthday (10 April)
-      const bday = daysUntilMonthDay(4,10);
-      document.getElementById('countdownBirthday').textContent = `${bday.days} day(s) until Moomin's Birthday (Apr 10)`;
-    }
-    updateCountdowns(); setInterval(updateCountdowns, 60*60*1000);
-
-  </script>
-</body>
-</html>
