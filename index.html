@@ -1,620 +1,312 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Moomin ❤️ Bazila — A Tiny Love App</title>
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moomin ❤️ Bazila</title>
   <style>
-    /* Mobile-first base styles */
-    :root{
-      --bg-1: linear-gradient(135deg,#ffd6e8 0%, #ffeed6 40%, #f3e8ff 100%);
-      --card: rgba(255,255,255,0.92);
-      --accent: rgba(255,96,146,0.95);
-      --glass: rgba(255,255,255,0.55);
-      --shadow: 0 8px 20px rgba(99,35,80,0.12);
-      --muted:#6b5b6e;
-      --heart-size: 36px;
+    /* Base styles */
+    body {
+      margin: 0;
+      font-family: 'Dancing Script', cursive, sans-serif;
+      background: linear-gradient(135deg, #ffdee9, #b5fffc);
+      color: #222; /* darker text for contrast */
+      text-align: center;
+      overflow-x: hidden;
     }
 
-    html,body{height:100%;}
-    body{
-      margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-      background:var(--bg-1);min-height:100vh;display:flex;flex-direction:column;color:#322; -webkit-font-smoothing:antialiased;
-      overflow-y:auto;
+    h1, h2, h3 {
+      color: #111;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
     }
 
-    header{position:sticky;top:0;backdrop-filter:blur(6px);background:linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.05));padding:.8rem 1rem;display:flex;align-items:center;gap:.6rem;z-index:50}
-    .brand{display:flex;align-items:center;gap:.6rem}
-    .logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#fff7fb,#ffdff0);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
-    .logo .mini{font-family:'Dancing Script',cursive;font-size:18px;color:var(--accent)}
-    h1{font-family:'Dancing Script',cursive;margin:0;font-size:18px}
-    .sub{font-size:12px;color:var(--muted)}
+    section {
+      padding: 40px 20px;
+    }
 
-    main{padding:1rem;flex:1;display:flex;flex-direction:column;gap:1rem}
-
-    /* card layout */
-    .card{background:var(--card);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
-    .bigcard{padding:16px;border-radius:18px}
-
-    /* navigation */
-    nav{display:flex;gap:.6rem;overflow:auto}
-    .navbtn{flex:1;min-width:84px;padding:.6rem .8rem;border-radius:12px;border:none;background:linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.35));font-weight:600}
-    .navbtn:active{transform:scale(.99)}
+    /* Floating hearts animation */
+    .heart {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: red;
+      clip-path: polygon(50% 0%, 61% 16%, 80% 20%, 100% 40%, 85% 70%, 50% 100%, 15% 70%, 0% 40%, 20% 20%, 39% 16%);
+      opacity: 0.7;
+      animation: floatUp 6s infinite;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0.6); opacity: 0.7; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
 
     /* Notes */
-    #notesList{display:flex;flex-direction:column;gap:.6rem}
-    .noteRow{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem}
-    .noteText{flex:1;font-size:14px}
-    .noteMeta{font-size:12px;color:var(--muted)}
-
-    /* Mood selector */
-    .moods{display:flex;gap:.4rem;flex-wrap:wrap}
-    .moodBtn{padding:.45rem .6rem;border-radius:12px;border:1px solid rgba(0,0,0,0.06);background:transparent}
-
-    /* Slideshow */
-    .slideshow{position:relative;overflow:hidden;border-radius:12px}
-    .slide{min-height:110px;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:'Dancing Script',cursive;font-size:18px}
-    .slideWrap{display:flex;transition:transform .6s cubic-bezier(.22,.9,.3,1)}
-
-    /* Quotes */
-    .quotes{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-    .quoteCard{padding:.8rem;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,240,250,0.6));font-size:13px}
-
-    /* gallery */
-    #galleryGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-    .polaroid{background:linear-gradient(180deg,#fff,#fff8f8);padding:8px;border-radius:8px;display:block;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
-    .polaroid img{display:block;width:100%;height:100px;object-fit:cover;border-radius:6px}
-
-    /* timeline */
-    .timeline{display:flex;flex-direction:column;gap:.8rem}
-    .tItem{display:flex;gap:.6rem;align-items:flex-start}
-    .tDot{width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:6px}
-
-    /* wheel */
-    .wheelWrap{display:flex;flex-direction:column;align-items:center;gap:.6rem}
-    canvas#wheel{width:260px;height:260px;border-radius:50%;touch-action:none}
-    .spinBtn{padding:.6rem 1rem;border-radius:999px;border:none;background:linear-gradient(90deg,#ff92b7,#ffd2e8);font-weight:700}
-
-    /* popup */
-    .popup{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:80}
-    .popup.show{display:flex}
-    .popupCard{width:92%;max-width:420px;background:var(--card);padding:16px;border-radius:16px;box-shadow:0 20px 40px rgba(30,20,40,0.18);text-align:center}
-
-    /* small screens fine-tuning */
-    @media (min-width:700px){
-      main{padding:1.6rem}
-      .quotes{grid-template-columns:repeat(3,1fr)}
-      #galleryGrid{grid-template-columns:repeat(4,1fr)}
+    #notes-list {
+      list-style: none;
+      padding: 0;
+    }
+    #notes-list li {
+      background: rgba(255,255,255,0.8);
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 500px;
     }
 
-    /* floating hearts container */
-    #floatLayer{position:fixed;inset:0;pointer-events:none;z-index:10}
+    /* Special Dates */
+    .dates-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .date-item {
+      background: linear-gradient(135deg, #ffb6c1, #ffc1e3);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      max-width: 600px;
+      flex: 1 1 200px;
+      transition: transform 0.2s;
+    }
+    .date-item:hover {
+      transform: scale(1.05);
+    }
 
-    /* watermark */
-    footer{font-size:12px;text-align:center;padding:12px;color:var(--muted)}
+    /* Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .popup-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 90%;
+      text-align: center;
+      animation: pop 0.4s ease;
+    }
+    @keyframes pop {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
 
-    /* small helpers */
-    .row{display:flex;gap:.6rem;align-items:center}
-    .center{text-align:center}
-    .tiny{font-size:12px;color:var(--muted)}
+    /* Gallery grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      padding: 20px;
+    }
+    .gallery-grid img {
+      width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .gallery-grid img:hover {
+      transform: scale(1.05);
+    }
 
-    /* glowing heart */
-    .glowHeart{font-size:14px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg, rgba(255,96,146,0.12), rgba(255,183,197,0.08));box-shadow:0 6px 20px rgba(255,96,146,0.08)}
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      padding-top: 60px;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      text-align: center;
+    }
+    .lightbox-content {
+      max-width: 90%;
+      max-height: 80%;
+    }
+    .lightbox .close {
+      position: absolute;
+      top: 20px; right: 40px;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+    }
 
-    /* subtle animations */
-    .pop{transform-origin:center;animation:pop .35s ease}
-    @keyframes pop{0%{transform:scale(.9);opacity:0}60%{transform:scale(1.03);opacity:1}100%{transform:scale(1)}}
+    /* Countdown */
+    .countdown {
+      font-size: 1.5rem;
+      margin-top: 20px;
+      color: #222;
+    }
 
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .date-item { font-size: 1rem; }
+      .gallery-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+    }
   </style>
 </head>
 <body>
-  <div id="floatLayer" aria-hidden="true"></div>
+  <h1>Moomin ❤️ Bazila</h1>
 
-  <header class="card">
-    <div class="brand">
-      <div class="logo"><span class="mini">M💗B</span></div>
-      <div>
-        <h1>Moomin ❤️ Bazila</h1>
-        <div class="sub">A tiny love diary — mobile-first & touch friendly</div>
-      </div>
+  <!-- Notes -->
+  <section>
+    <h2>Daily Notes</h2>
+    <input type="text" id="note-input" placeholder="Write your note...">
+    <select id="mood">
+      <option>😊</option>
+      <option>😍</option>
+      <option>😢</option>
+      <option>😡</option>
+    </select>
+    <button onclick="addNote()">Add</button>
+    <ul id="notes-list"></ul>
+  </section>
+
+  <!-- Special Dates -->
+  <section>
+    <h2>Special Dates</h2>
+    <div class="dates-container">
+      <div class="date-item" data-msg="Happy Birthday, my love! 💖">7 March – Bazila’s Birthday</div>
+      <div class="date-item" data-msg="Your birthday, my sweetheart! 🎉">10 April – Moomin’s Birthday</div>
+      <div class="date-item" data-msg="Our first anniversary! 💕">9 March 2024 – Anniversary</div>
+      <div class="date-item" data-msg="Our first kiss 💋">24 May 2025 – First Kiss</div>
+      <div class="date-item" data-msg="Our first lip kiss 😘">28 June 2025 – First Lip Kiss</div>
     </div>
-    <div style="margin-left:auto" class="row">
-      <button id="audioToggle" class="navbtn tiny">Music</button>
-      <button id="surpriseBtn" class="navbtn tiny">Surprise</button>
+  </section>
+
+  <!-- Countdown -->
+  <section>
+    <h2>Countdowns</h2>
+    <div id="count-anniv" class="countdown"></div>
+    <div id="count-bday" class="countdown"></div>
+  </section>
+
+  <!-- Gallery -->
+  <section>
+    <h2>Memories Gallery</h2>
+    <div class="gallery-grid">
+      <img src="images/photo1.jpg" alt="Memory 1">
+      <img src="images/photo2.jpg" alt="Memory 2">
+      <img src="images/photo3.jpg" alt="Memory 3">
+      <img src="images/photo4.jpg" alt="Memory 4">
+      <img src="images/photo5.jpg" alt="Memory 5">
+      <img src="images/photo6.jpg" alt="Memory 6">
     </div>
-  </header>
+  </section>
 
-  <main>
-    <nav class="card">
-      <button class="navbtn" data-show="home">Home</button>
-      <button class="navbtn" data-show="notes">Daily Notes</button>
-      <button class="navbtn" data-show="gallery">Gallery</button>
-      <button class="navbtn" data-show="timeline">Dates</button>
-      <button class="navbtn" data-show="extras">Extras</button>
-    </nav>
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox">
+    <span class="close">&times;</span>
+    <img class="lightbox-content" id="lightbox-img">
+  </div>
 
-    <!-- HOME -->
-    <section id="home" class="bigcard card">
-      <div class="row" style="justify-content:space-between;align-items:center">
-        <div>
-          <div class="glowHeart">Moomin ❤️ Bazila</div>
-          <div class="tiny">Swirl the heart wheel, read a note, or check memories.</div>
-        </div>
-        <div class="center">
-          <div id="countdownNext" class="tiny"></div>
-          <div id="countdownAnniversary" class="tiny"></div>
-          <div id="countdownBirthday" class="tiny"></div>
-          <div class="tiny">Next special days</div>
-        </div>
-      </div>
-
-      <!-- Slideshow of love notes -->
-      <div style="margin-top:12px">
-        <div class="slideshow card" id="loveNotesWrap">
-          <div class="slideWrap" id="slideWrap"></div>
-        </div>
-      </div>
-
-      <!-- Quotes -->
-      <div style="margin-top:12px" class="card">
-        <div style="font-weight:700;margin-bottom:8px">Romantic Quotes</div>
-        <div class="quotes" id="quotesGrid"></div>
-      </div>
-    </section>
-
-    <!-- NOTES -->
-    <section id="notes" class="card" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <strong>Daily Notes</strong>
-        <div class="tiny">Saved locally on this device</div>
-      </div>
-
-      <form id="noteForm" style="margin-top:12px;display:flex;gap:.6rem;flex-direction:column">
-        <input type="date" id="noteDate" style="padding:.6rem;border-radius:10px;border:1px solid rgba(0,0,0,0.06)" />
-        <textarea id="noteContent" rows="4" placeholder="Write a small love note, mood or memory..." style="border-radius:10px;padding:.6rem;border:1px solid rgba(0,0,0,0.06)"></textarea>
-        <div class="moods" id="moodPicker">
-          <!-- emojis injected -->
-        </div>
-        <div class="row" style="justify-content:space-between">
-          <button type="submit" class="navbtn">Save Note</button>
-          <button type="button" id="clearNotes" class="navbtn" style="background:linear-gradient(90deg,#fff,#ffd6e8)">Clear</button>
-        </div>
-      </form>
-
-      <div id="notesList" style="margin-top:12px"></div>
-    </section>
-
-    <!-- GALLERY -->
-    <section id="gallery" class="card" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <strong>Photo Library</strong>
-        <div class="tiny">No captions — just the memories</div>
-      </div>
-      <div style="margin-top:8px" class="row">
-        <input type="file" id="addImages" accept="image/*" multiple style="flex:1" />
-        <button id="clearGallery" class="navbtn tiny" style="width:110px">Clear</button>
-      </div>
-
-      <!-- Pre-filled placeholders for 6 images. In your VS Code project, put your images in folder `images/` named photo1.jpg .. photo6.jpg -->
-      <div id="galleryGrid" style="margin-top:12px">
-        <div class="polaroid"><img src="images/photo1.jpg" alt="Photo 1"></div>
-        <div class="polaroid"><img src="images/photo2.jpg" alt="Photo 2"></div>
-        <div class="polaroid"><img src="images/photo3.jpg" alt="Photo 3"></div>
-        <div class="polaroid"><img src="images/photo4.jpg" alt="Photo 4"></div>
-        <div class="polaroid"><img src="images/photo5.jpg" alt="Photo 5"></div>
-        <div class="polaroid"><img src="images/photo6.jpg" alt="Photo 6"></div>
-      </div>
-    </section>
-
-    <!-- TIMELINE -->
-    <section id="timeline" class="card" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <strong>Important Dates</strong>
-        <div class="tiny">Tap a card to view memory</div>
-      </div>
-
-      <div class="timeline" id="timelineList" style="margin-top:12px"></div>
-    </section>
-
-    <!-- EXTRAS: wheel, quiz, love meter -->
-    <section id="extras" class="card" style="display:none">
-      <div style="display:flex;gap:.6rem;flex-direction:column">
-
-        <div class="card wheelWrap">
-          <canvas id="wheel" width="520" height="520"></canvas>
-          <button id="spin" class="spinBtn">Spin the Heart</button>
-          <div id="wheelResult" class="tiny center"></div>
-        </div>
-
-        <div class="card">
-          <strong>Love Quiz</strong>
-          <div style="margin-top:8px">Who do you love the most?</div>
-          <div style="display:flex;gap:.6rem;margin-top:8px">
-            <button class="navbtn quizAns">Moomin</button>
-            <button class="navbtn quizAns">Bazila</button>
-            <button class="navbtn quizAns">Everyone</button>
-          </div>
-          <div id="quizResult" class="tiny center" style="margin-top:8px"></div>
-        </div>
-
-        <div class="card">
-          <strong>Love Meter</strong>
-          <input type="range" id="loveMeter" min="0" max="100" value="88" />
-          <div id="loveMeterText" class="tiny center" style="margin-top:8px"></div>
-        </div>
-
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="card">Moomin ♥ Bazila — keep this page safe on your phone. Tip: Install as a PWA or add to home screen for app-like feel.</footer>
-
-  <!-- popup container -->
-  <div id="popup" class="popup" role="dialog" aria-modal="true">
-    <div class="popupCard">
-      <div id="popupContent"></div>
-      <div style="margin-top:12px"><button id="closePopup" class="navbtn">Close</button></div>
-    </div>
+  <!-- Popup -->
+  <div id="popup" class="popup">
+    <div class="popup-content" id="popup-msg"></div>
   </div>
 
   <script>
-    /* --------------------------- Helpers & Data --------------------------- */
-    const specialDates = [
-      {date:'2025-03-07',title:`Bazila's Birthday`, message:`Happy birthday, Zulaikha — my star 🌟`},
-      {date:'2025-04-10',title:`Moomin's Birthday`, message:`Happy birthday, my love — let's celebrate!`},
-      {date:'2024-03-09',title:`Anniversary`, message:`Our journey began — 9th March 2024`},
-      {date:'2025-05-24',title:`First kiss`, message:`That shy, bright moment on 24 May 2025`},
-      {date:'2025-06-28',title:`First lip kiss`, message:`Our first lip kiss — the world paused.`}
-    ];
+    /* Notes with localStorage */
+    function addNote() {
+      let noteInput = document.getElementById("note-input");
+      let mood = document.getElementById("mood").value;
+      let notesList = document.getElementById("notes-list");
 
-    const defaultLoveNotes = [
-      "I find new reasons to fall for you every morning.",
-      "Sometimes I smile for no reason, then I remember you.",
-      "If I had a flower for every time I thought of you..." ,
-      "Your laugh is my favourite melody."
-    ];
+      if (noteInput.value.trim() === "") return;
+      let note = {
+        text: noteInput.value,
+        mood: mood,
+        date: new Date().toLocaleDateString()
+      };
 
-    const quotes = [
-      "Love is composed of a single soul inhabiting two bodies.",
-      "I have found the one my heart loves.",
-      "You are my today and all of my tomorrows.",
-      "Where there is love there is life."
-    ];
-
-    /* ---------------------- Floating hearts (Easter glow) --------------------- */
-    const floatLayer = document.getElementById('floatLayer');
-    function spawnHeart(x, y, size=24, color=null){
-      const el=document.createElement('div');
-      el.innerHTML='❤';
-      el.style.position='absolute';
-      el.style.left=(x|| (Math.random()*100))+'%';
-      el.style.top=(y|| (Math.random()*80))+'%';
-      el.style.fontSize=size+'px';
-      el.style.opacity='0.9';
-      el.style.pointerEvents='none';
-      el.style.transform=`translate(-50%,-50%)`;
-      el.style.animation=`floatUp ${6+Math.random()*6}s linear forwards`;
-      el.style.filter='drop-shadow(0 6px 12px rgba(255,80,140,0.12))';
-      floatLayer.appendChild(el);
-      setTimeout(()=>el.remove(),12000);
-    }
-    const floatStyle = document.createElement('style');
-    floatStyle.innerHTML='@keyframes floatUp{0%{transform:translate(-50%,10px) scale(1);opacity:1}100%{transform:translate(-50%,-160px) scale(.7);opacity:0}}';
-    document.head.appendChild(floatStyle);
-
-    // gentle ongoing drift
-    setInterval(()=>spawnHeart(),1400);
-
-    /* ----------------------- Routing between sections ---------------------- */
-    document.querySelectorAll('[data-show]').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        showSection(btn.dataset.show);
-      });
-    });
-    function showSection(id){
-      document.querySelectorAll('main section').forEach(s=>s.style.display='none');
-      const el=document.getElementById(id);
-      if(el) el.style.display='block';
-      window.scrollTo({top:0,behavior:'smooth'});
+      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+      notes.push(note);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      renderNotes();
+      noteInput.value = "";
     }
 
-    /* ----------------------- Love notes slideshow -------------------------- */
-    const slideWrap = document.getElementById('slideWrap');
-    let notes = JSON.parse(localStorage.getItem('love_notes')) || defaultLoveNotes.slice();
-    function renderSlides(){
-      slideWrap.innerHTML='';
-      notes.forEach(n=>{
-        const d=document.createElement('div');d.className='slide';d.textContent=n;slideWrap.appendChild(d);
-      });
-      // clone to make sliding loop feel nicer
-      const slides=slideWrap.children.length;
-      let idx=0;
-      function advance(){
-        idx=(idx+1)%slides;
-        slideWrap.style.transform=`translateX(-${idx*100}%)`;
-      }
-      setInterval(advance,4200);
-    }
-    renderSlides();
-
-    /* ------------------------ Quotes grid --------------------------- */
-    const quotesGrid = document.getElementById('quotesGrid');
-    quotes.forEach(q=>{
-      const c=document.createElement('div');c.className='quoteCard';c.innerHTML=`<div style='font-family:Dancing Script,cursive'>"${q}"</div><div style='font-size:11px;margin-top:6px;color:var(--muted)'>— love library</div>`;quotesGrid.appendChild(c);
-    });
-
-    /* ---------------------- Daily notes (localStorage) --------------------- */
-    const noteForm = document.getElementById('noteForm');
-    const noteDate = document.getElementById('noteDate');
-    const noteContent = document.getElementById('noteContent');
-    const moodPicker = document.getElementById('moodPicker');
-    const notesList = document.getElementById('notesList');
-
-    const moods = ['😍','😊','😴','😔','😡','🤗','🤩'];
-    let selectedMood = moods[0];
-    moods.forEach(m=>{
-      const b=document.createElement('button');b.type='button';b.className='moodBtn';b.innerText=m;b.addEventListener('click',()=>{selectedMood=m;document.querySelectorAll('.moodBtn').forEach(x=>x.style.outline='none');b.style.outline='2px solid rgba(255,96,146,0.25)'});moodPicker.appendChild(b);
-    });
-
-    function loadNotes(){
-      const arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
-      notesList.innerHTML='';
-      arr.slice().reverse().forEach((n,i)=>{
-        const r=document.createElement('div');r.className='noteRow card';
-        r.innerHTML=`<div class='noteText'>${escapeHtml(n.text)}</div><div class='noteMeta'>${n.date} · ${n.mood}</div>`;
-        notesList.appendChild(r);
+    function renderNotes() {
+      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+      let notesList = document.getElementById("notes-list");
+      notesList.innerHTML = "";
+      notes.forEach(n => {
+        let li = document.createElement("li");
+        li.textContent = `${n.date} ${n.mood} - ${n.text}`;
+        notesList.appendChild(li);
       });
     }
-    noteForm.addEventListener('submit',e=>{
-      e.preventDefault();
-      const d = noteDate.value || new Date().toISOString().slice(0,10);
-      const text = noteContent.value.trim();
-      if(!text) return alert('Write a little note!');
-      const arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
-      arr.push({date:d,text:text,mood:selectedMood});
-      localStorage.setItem('diary_notes',JSON.stringify(arr));
-      noteContent.value='';noteDate.value='';
-      loadNotes();
-    });
-    document.getElementById('clearNotes').addEventListener('click',()=>{if(confirm('Clear all notes from this device?')){localStorage.removeItem('diary_notes');loadNotes();}});
-    loadNotes();
+    renderNotes();
 
-    /* ---------------------- Gallery (images save to localStorage) ------------ */
-    const addImages = document.getElementById('addImages');
-    const galleryGrid = document.getElementById('galleryGrid');
-    function renderGallery(){
-      const imgs = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
-      if(imgs.length>0){
-        galleryGrid.innerHTML='';
-        imgs.forEach((d,idx)=>{
-          const card=document.createElement('div');card.className='polaroid';
-          const img=document.createElement('img');img.src=d;card.appendChild(img);
-          galleryGrid.appendChild(card);
-        });
-      } // otherwise leave the 6 placeholders present in HTML for direct file references
-    }
-    addImages.addEventListener('change',async(e)=>{
-      const files=Array.from(e.target.files).slice(0,30);
-      const arr = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
-      for(const f of files){
-        const data = await fileToDataUrl(f);
-        arr.push(data);
-      }
-      localStorage.setItem('gallery_imgs',JSON.stringify(arr));
-      renderGallery();
-      addImages.value='';
-    });
-    document.getElementById('clearGallery').addEventListener('click',()=>{if(confirm('Clear gallery images?')){localStorage.removeItem('gallery_imgs');renderGallery();}});
-    function fileToDataUrl(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
-    renderGallery();
-
-    /* ----------------------- Timeline & special dates ---------------------- */
-    const timelineList = document.getElementById('timelineList');
-    function renderTimeline(){
-      timelineList.innerHTML='';
-      specialDates.forEach(sd=>{
-        const item=document.createElement('div');item.className='tItem card';
-        item.innerHTML=`<div style='width:56px'><div class='tDot'></div></div><div style='flex:1'><strong>${sd.title}</strong><div class='tiny'>${sd.date}</div></div>`;
-        item.addEventListener('click',()=>showPopup(`<h3>${sd.title}</h3><p class='tiny'>${sd.date}</p><p>${sd.message}</p>`));
-        timelineList.appendChild(item);
-      });
-    }
-    renderTimeline();
-
-    /* ------------------------- Popup util ------------------------------- */
-    const popup = document.getElementById('popup');
-    const popupContent = document.getElementById('popupContent');
-    document.getElementById('closePopup').addEventListener('click',()=>popup.classList.remove('show'));
-    function showPopup(html){popupContent.innerHTML=html;popup.classList.add('show');}
-
-    /* ----------------------- Surprise & daily note pop -------------------- */
-    const surpriseBtn = document.getElementById('surpriseBtn');
-    surpriseBtn.addEventListener('click',()=>popRandomNote());
-    function popRandomNote(){
-      const pool = JSON.parse(localStorage.getItem('custom_notes')||'[]').concat(defaultLoveNotes);
-      const sel = pool[Math.floor(Math.random()*pool.length)];
-      showPopup(`<div style='font-family:Dancing Script,cursive;font-size:18px'>${sel}</div>`);
-    }
-
-    // show a new random love note once per day
-    const lastDaily = localStorage.getItem('last_daily_note');
-    const todayKey = new Date().toISOString().slice(0,10);
-    if(lastDaily !== todayKey){
-      popRandomNote();
-      localStorage.setItem('last_daily_note', todayKey);
-    }
-
-    /* ------------------------ Wheel of outcomes -------------------------- */
-    const wheelCanvas = document.getElementById('wheel');
-    const wheelCtx = wheelCanvas.getContext('2d');
-    const wheelItems = ['Kiss','Chocolate','Surprise date','Hug attack','Movie night','Dance till dawn','Whisper a secret','Slow song'];
-    function drawWheel(){
-      const ctx = wheelCtx; const w=wheelCanvas.width; const h=wheelCanvas.height; const cx=w/2,cy=h/2; const r=Math.min(cx,cy)-8;
-      ctx.clearRect(0,0,w,h);
-      const slice = 2*Math.PI / wheelItems.length;
-      wheelItems.forEach((it,i)=>{
-        const start=i*slice; const end=start+slice;
-        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath();
-        ctx.fillStyle = i%2 ? 'rgba(255,200,230,0.95)':'rgba(255,235,245,0.95)';
-        ctx.fill();
-        // text
-        ctx.save(); ctx.translate(cx,cy); ctx.rotate(start + slice/2); ctx.textAlign='right'; ctx.fillStyle='#4a2b3a'; ctx.font='bold 18px Inter'; ctx.fillText(it, r-16, 6); ctx.restore();
-      });
-      // center
-      ctx.beginPath(); ctx.arc(cx,cy,48,0,2*Math.PI);ctx.fillStyle='linear-gradient(white,pink)';ctx.fill();
-      ctx.fillStyle='#4a2b3a';ctx.font='700 18px Inter';ctx.textAlign='center';ctx.fillText('Spin',cx,cy+6);
-    }
-    drawWheel();
-
-    let isSpinning=false;
-    document.getElementById('spin').addEventListener('click',async()=>{
-      if(isSpinning) return; isSpinning=true; playPop();
-      const spins = Math.floor(Math.random()*4)+4; // full spins
-      const sector = Math.floor(Math.random()*wheelItems.length);
-      const finalAngle = (spins*2*Math.PI) + (sector * (2*Math.PI/wheelItems.length)) + (Math.random() * (2*Math.PI/wheelItems.length));
-      const duration=4000;
-      animateRotation(finalAngle,duration).then(()=>{
-        isSpinning=false; const result=wheelItems[sector]; document.getElementById('wheelResult').textContent=`Result: ${result}`; showPopup(`<h3>${result}</h3><p class='tiny'>A sweet outcome awaits...</p>`);
+    /* Special dates popup */
+    document.querySelectorAll(".date-item").forEach(item => {
+      item.addEventListener("click", () => {
+        document.getElementById("popup-msg").innerText = item.dataset.msg;
+        document.getElementById("popup").style.display = "flex";
       });
     });
+    document.getElementById("popup").addEventListener("click", () => {
+      document.getElementById("popup").style.display = "none";
+    });
 
-    function animateRotation(target, duration){
-      const el = wheelCanvas; const start=performance.now(); const from= (parseFloat(el.dataset.rot)||0);
-      return new Promise(res=>{
-        function frame(t){
-          const p = Math.min(1,(t-start)/duration);
-          const eased = 1 - Math.pow(1-p,3);
-          const cur = from + (target-from)*eased;
-          el.style.transform = `rotate(${cur}rad)`;
-          if(p<1) requestAnimationFrame(frame); else {el.dataset.rot = cur; res();}
+    /* Countdown */
+    function countdown(id, dateStr, label) {
+      let target = new Date(dateStr).getTime();
+      setInterval(() => {
+        let now = new Date().getTime();
+        let diff = target - now;
+        if (diff < 0) {
+          document.getElementById(id).innerText = label + " is here!";
+          return;
         }
-        requestAnimationFrame(frame);
+        let days = Math.floor(diff / (1000*60*60*24));
+        let hours = Math.floor((diff % (1000*60*60*24))/(1000*60*60));
+        let mins = Math.floor((diff % (1000*60*60))/(1000*60));
+        document.getElementById(id).innerText = `${label}: ${days}d ${hours}h ${mins}m left`;
+      }, 1000);
+    }
+    countdown("count-anniv", "March 9, 2026", "Anniversary");
+    countdown("count-bday", "April 10, 2026", "Moomin's Birthday");
+
+    /* Lightbox with swipe */
+    const images = document.querySelectorAll(".gallery-grid img");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const closeBtn = document.querySelector(".lightbox .close");
+
+    let currentIndex = 0;
+    images.forEach((img, index) => {
+      img.addEventListener("click", () => {
+        currentIndex = index;
+        showImage(currentIndex);
+        lightbox.style.display = "block";
       });
-    }
-
-    /* -------------------- Quiz & love meter ------------------------------ */
-    document.querySelectorAll('.quizAns').forEach(b=>b.addEventListener('click',()=>{
-      document.getElementById('quizResult').textContent = "Correct — Bazila, always 💖";
-      spawnHeart(null,null,28);
-    }));
-    const loveMeter = document.getElementById('loveMeter');
-    const loveMeterText = document.getElementById('loveMeterText');
-    function updateLoveText(v){
-      if(v>95) return 'Infinity love detected!';
-      if(v>80) return 'So much love 🌟';
-      if(v>50) return 'Warm fuzzy feelings';
-      if(v>20) return 'Cuddles required';
-      return 'Need more hugs!';
-    }
-    loveMeter.addEventListener('input',e=>loveMeterText.textContent=updateLoveText(e.target.value));
-    loveMeterText.textContent=updateLoveText(loveMeter.value);
-
-    /* ----------------------- keyboard easter egg ------------------------- */
-    const keyBuffer=[]; const secret='zulaikha';
-    window.addEventListener('keydown',e=>{
-      keyBuffer.push(e.key.toLowerCase()); if(keyBuffer.length>secret.length) keyBuffer.shift();
-      if(keyBuffer.join('').includes(secret)) triggerZulaikha();
     });
-    function triggerZulaikha(){
-      showPopup(`<div style="font-family:Dancing Script,cursive;font-size:18px">Zulaikha —
-      You are the poem I never finish writing. <br/><br/>Forever, Moomin</div>`);
-      for(let i=0;i<24;i++) spawnHeart();
+    closeBtn.addEventListener("click", () => lightbox.style.display = "none");
+    lightbox.addEventListener("click", e => {
+      if (e.target === lightbox) lightbox.style.display = "none";
+    });
+    function showImage(i) {
+      lightboxImg.src = images[i].src;
     }
 
-    /* ------------------------- helper utilities ------------------------- */
-    function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-    /* ------------------------ Audio: user-upload + webaudio ---------------- */
-    let bgAudio=null; let audioFileUrl=null; const audioToggle=document.getElementById('audioToggle');
-    audioToggle.addEventListener('click',()=>{
-      // ask user to upload a track if none
-      if(!bgAudio){
-        const f=inputFile('Upload a music file (mp3) for background music');
-        f.then(file=>{
-          if(!file) return; audioFileUrl=URL.createObjectURL(file); bgAudio=new Audio(audioFileUrl); bgAudio.loop=true; bgAudio.volume=0.25; bgAudio.play(); audioToggle.textContent='Music: ON';
-        });
-      } else {
-        if(bgAudio.paused){bgAudio.play();audioToggle.textContent='Music: ON'} else {bgAudio.pause();audioToggle.textContent='Music: OFF'}
+    let startX = 0;
+    lightbox.addEventListener("touchstart", e => { startX = e.touches[0].clientX; });
+    lightbox.addEventListener("touchend", e => {
+      let endX = e.changedTouches[0].clientX;
+      let diff = startX - endX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) currentIndex = (currentIndex + 1) % images.length;
+        else currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage(currentIndex);
       }
     });
-    function inputFile(promptText){
-      return new Promise(res=>{
-        const inp=document.createElement('input');inp.type='file';inp.accept='audio/*';inp.onchange=()=>res(inp.files[0]);inp.click();setTimeout(()=>res(null),60000);
-      });
-    }
-
-    /* ------------------ small sound effect for clicks --------------------- */
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playPop(){
-      try{
-        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-        o.type='sine'; o.frequency.value=420; g.gain.value=0.0001; o.connect(g); g.connect(audioCtx.destination);
-        o.start(); g.gain.exponentialRampToValueAtTime(0.1,audioCtx.currentTime+0.01); g.gain.exponentialRampToValueAtTime(0.00001,audioCtx.currentTime+0.18); o.stop(audioCtx.currentTime+0.22);
-      }catch(e){/* ignore */}
-    }
-
-    document.addEventListener('click',e=>{ if(e.target.closest('.glowHeart') || e.target.closest('.moodBtn')) playPop(); });
-
-    /* -------------------- initial small touches -------------------------- */
-    document.title = 'Moomin ❤️ Bazila';
-    // set today's date default in the note form
-    noteDate.value = new Date().toISOString().slice(0,10);
-
-    // small helper for adding custom love notes to slideshow (optional)
-    window.addLoveNote = (txt) => { notes.push(txt); localStorage.setItem('custom_notes', JSON.stringify([txt].concat(JSON.parse(localStorage.getItem('custom_notes')||'[]')))); renderSlides(); };
-
-    // expose a reset utility on console for debugging
-    window._resetLoveSite = ()=>{ if(confirm('Reset local storage for this love site?')) {localStorage.clear();location.reload();} };
-
-    // small UX: click outside popup to close
-    popup.addEventListener('click', (e)=>{ if(e.target===popup) popup.classList.remove('show'); });
-
-    // greeting for returning
-    setTimeout(()=>spawnHeart(null,null,36),900);
-
-    /* ------------------------- Countdown helpers ------------------------- */
-    function daysUntilMonthDay(month, day){
-      const now = new Date();
-      let year = now.getFullYear();
-      let target = new Date(year, month-1, day);
-      if(target < new Date(now.getFullYear(), now.getMonth(), now.getDate())) target = new Date(year+1, month-1, day);
-      const diff = Math.ceil((target - new Date(now.getFullYear(), now.getMonth(), now.getDate()))/86400000);
-      return {days:diff, date: target};
-    }
-
-    function nextSpecialDate(){
-      const today=new Date(); const candidates = specialDates.map(sd=>{
-        const [y,m,d] = sd.date.split('-').map(Number);
-        // prefer the next occurrence (use year if provided and in future, else compute next occurrence by month/day)
-        let year = (y && y>=today.getFullYear()) ? y : today.getFullYear();
-        let dt = new Date(year, m-1, d);
-        if(dt < today) dt = new Date(dt.getFullYear()+1, m-1, d);
-        return {sd,dt};
-      }).sort((a,b)=>a.dt - b.dt);
-      return candidates[0];
-    }
-
-    function updateCountdowns(){
-      // next special day
-      const next = nextSpecialDate();
-      if(next){
-        const days = Math.ceil((next.dt - new Date())/86400000);
-        document.getElementById('countdownNext').textContent = `${days} day(s) until ${next.sd.title} (${next.sd.date})`;
-      }
-      // anniversary (9 March)
-      const ann = daysUntilMonthDay(3,9);
-      document.getElementById('countdownAnniversary').textContent = `${ann.days} day(s) until Anniversary (Mar 9)`;
-      // moomin's birthday (10 April)
-      const bday = daysUntilMonthDay(4,10);
-      document.getElementById('countdownBirthday').textContent = `${bday.days} day(s) until Moomin's Birthday (Apr 10)`;
-    }
-    updateCountdowns(); setInterval(updateCountdowns, 60*60*1000);
-
   </script>
 </body>
 </html>
