@@ -501,7 +501,7 @@
 
         <div class="form-group">
           <label class="form-label" for="noteContent">Your Love Note</label>
-          <textarea id="noteContent" class="form-textarea" placeholder="Write a beautiful love note, share your feelings, or capture a special memory..."></textarea>
+          <textarea id="noteContent" class="form-textarea" placeholder="leyakh sa yethas keh xovv meon"></textarea>
         </div>
 
         <div class="mood-section">
@@ -611,7 +611,7 @@
   <script>
     /* --------------------------- CONFIG --------------------------- */
     // Local password (change this to whatever you want)
-    const SITE_PASSWORD = 'lovesecret'; // change to your preferred password
+    const SITE_PASSWORD = 'moominbazila'; // change to your preferred password
     const AUTH_KEY = 'site_authed';
 
     /* --------------------------- Helpers & Data --------------------------- */
@@ -655,7 +655,7 @@
     const floatStyle = document.createElement('style');
     floatStyle.innerHTML='@keyframes floatUp{0%{transform:translate(-50%,10px) scale(1);opacity:1}100%{transform:translate(-50%,-160px) scale(.7);opacity:0}}';
     document.head.appendChild(floatStyle);
-    setInterval(()=>spawnHeart(),1400);
+    setInterval(()=>spawnHeart(),700);
 
     /* ----------------------- Routing between sections ---------------------- */
     document.querySelectorAll('[data-show]').forEach(btn=>{
@@ -768,7 +768,7 @@
         btn.addEventListener('click', (e)=>{
           const id = btn.dataset.id;
           if(!id) return;
-          if(!confirm('Delete this note? This cannot be undone.')) return;
+          if(!confirm('Pazi chuya delete karun ??')) return;
           let current = JSON.parse(localStorage.getItem('diary_notes')||'[]');
           current = current.filter(x=>String(x.id)!==String(id));
           localStorage.setItem('diary_notes', JSON.stringify(current));
@@ -810,7 +810,7 @@
     });
 
     document.getElementById('clearNotes').addEventListener('click',()=>{
-      if(confirm('Are you sure you want to clear all your love notes? This cannot be undone.')) {
+      if(confirm('eth peth gasnai yem saarie dlt, saare cha karin delete?')) {
         localStorage.removeItem('diary_notes');
         loadNotes();
       }
@@ -984,9 +984,9 @@
     /* -------------------- Quiz & love meter ------------------------------ */
     document.querySelectorAll('.quizAns').forEach(b=>b.addEventListener('click',(e)=>{
       const answer = e.target.textContent;
-      let response = "Correct — Bazila, always 💖";
-      if(answer === "Moomin") response = "Sweet, but we know Bazila wins! 😉";
-      if(answer === "Everyone") response = "Nice try, but Bazila is #1! 💕";
+      let response = "enn mai che payii 😄";
+      if(answer === "Moomin") response = "I love you tooooo meri jaan❤️😘";
+      if(answer === "Everyone") response = "Nice try, but mai hu #1! 💕";
       document.getElementById('quizResult').textContent = response;
       spawnHeart(null,null,28);
     }));
@@ -1005,7 +1005,7 @@
     loveMeter.addEventListener('input',e=>{
       const value = e.target.value;
       loveMeterText.textContent = updateLoveText(value);
-      if(value > 90) spawnHeart(null, null, 24);
+      if(value > 90) spawnHeart(50, 70, 24);
     });
     loveMeterText.textContent=updateLoveText(loveMeter.value);
 
