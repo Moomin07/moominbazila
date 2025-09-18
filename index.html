@@ -377,6 +377,21 @@
       font-size: 14px;
     }
 
+  <div id="passwordScreen" aria-hidden="false">
+    <div id="passwordCard" role="dialog" aria-modal="true" aria-label="Enter site password">
+      <h2>Welcome</h2>
+      <p>Enter the secret to unlock this tiny love diary</p>
+      <input id="passwordInput" type="password" placeholder="Password" autocomplete="off" />
+      <button id="passwordSubmit">Unlock</button>
+      <div id="passwordMsg"></div>
+      <div id="lockControls" style="display:none">
+        <button id="logoutBtn" type="button">Lock</button>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--text-muted)">password nhi pata to kya karne aaye ho yaha</div>
+    </div>
+  </div>
+
+  <style>
     /* Password screen (full-screen) */
     #passwordScreen{
       position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:9999;
@@ -390,32 +405,30 @@
     }
     #passwordCard h2{ font-family:'Dancing Script',cursive; font-size:28px; margin:0 0 8px 0; color:var(--text-primary); }
     #passwordCard p{ color:var(--text-muted); margin:0 0 16px 0; }
-    #passwordInput{ width:100%; padding:0.9rem 1rem; border-radius:12px; border:2px solid var(--border); font-size:16px; margin-bottom:12px; }
-    #passwordSubmit{ width:100%; padding:0.95rem; border-radius:12px; border:none; background:linear-gradient(135deg,var(--accent),rgba(255,96,146,0.8)); color:white; font-weight:700; cursor:pointer; }
+
+    /* INPUT AND BUTTON SAME HEIGHT */
+    #passwordInput, #passwordSubmit {
+      width:100%;
+      padding:0.95rem 1rem;  /* matched padding */
+      border-radius:12px;
+      font-size:16px;
+      box-sizing:border-box;
+    }
+    #passwordInput{ border:2px solid var(--border); }
+    #passwordSubmit{
+      border:none;
+      background:linear-gradient(135deg,var(--accent),rgba(255,96,146,0.8));
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+    }
+
     #passwordMsg{ font-size:13px; color:var(--text-muted); margin-top:10px; min-height:18px; }
     #lockControls{ display:flex; gap:8px; margin-top:12px; justify-content:center; }
     #logoutBtn{ background:transparent; border:1px solid var(--border); padding:8px 12px; border-radius:10px; cursor:pointer; color:var(--text-primary); }
     #logoutBtn:hover{ border-color:var(--accent); background:var(--accent-light); }
   </style>
-</head>
 
-<body>
-  <div id="floatLayer" aria-hidden="true"></div>
-
-  <!-- PASSWORD SCREEN -->
-  <div id="passwordScreen" aria-hidden="false">
-    <div id="passwordCard" role="dialog" aria-modal="true" aria-label="Enter site password">
-      <h2>Welcome</h2>
-      <p>Enter the secret to unlock this tiny love diary</p>
-      <input id="passwordInput" type="password" placeholder="Password" autocomplete="off" />
-      <button id="passwordSubmit">Unlock</button>
-      <div id="passwordMsg"></div>
-      <div id="lockControls" style="display:none">
-        <button id="logoutBtn" type="button">Lock</button>
-      </div>
-      <div style="margin-top:12px;font-size:12px;color:var(--text-muted)">This is local, client-side only — change the password in the source if needed.</div>
-    </div>
-  </div>
 
   <header class="card">
     <div class="brand">
