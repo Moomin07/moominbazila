@@ -34,6 +34,7 @@
       min-height:100vh;
       display:flex;
       flex-direction:column;
+      gap:0;
       color:var(--text-primary);
       -webkit-font-smoothing:antialiased;
       font-weight:400;
@@ -127,7 +128,7 @@
       padding-bottom: 1rem;
       border-bottom: 2px solid var(--border);
     }
-    
+
     .notes-title {
       font-size: 1.5rem;
       font-weight: 700;
@@ -135,18 +136,8 @@
       font-family: 'Dancing Script', cursive;
     }
 
-    .form-group {
-      margin-bottom: 1.2rem;
-    }
-
-    .form-label {
-      display: block;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-      font-size: 14px;
-    }
-
+    .form-group { margin-bottom: 1.2rem; }
+    .form-label { display: block; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 14px; }
     .form-input, .form-textarea {
       width: 100%;
       padding: 1rem;
@@ -159,23 +150,15 @@
       transition: all 0.3s ease;
       box-sizing: border-box;
     }
-
     .form-input:focus, .form-textarea:focus {
       outline: none;
       border-color: var(--accent);
       background: rgba(255,255,255,0.95);
       box-shadow: 0 0 0 3px var(--accent-light);
     }
+    .form-textarea { resize: vertical; min-height: 120px; }
 
-    .form-textarea {
-      resize: vertical;
-      min-height: 120px;
-    }
-
-    .mood-section {
-      margin: 1.2rem 0;
-    }
-
+    .mood-section { margin: 1.2rem 0; }
     .moods {
       display: flex;
       gap: 0.8rem;
@@ -201,24 +184,10 @@
       justify-content: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
+    .moodBtn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(255,96,146,0.3); }
+    .moodBtn.selected { border-color: var(--accent); background: var(--accent-light); transform: scale(1.1); }
 
-    .moodBtn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 20px rgba(255,96,146,0.3);
-    }
-
-    .moodBtn.selected {
-      border-color: var(--accent);
-      background: var(--accent-light);
-      transform: scale(1.1);
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-
+    .form-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
     .btn-primary {
       flex: 2;
       padding: 1rem 1.5rem;
@@ -231,11 +200,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255,96,146,0.4);
-    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,96,146,0.4); }
 
     .btn-secondary {
       flex: 1;
@@ -248,11 +213,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
-    .btn-secondary:hover {
-      background: linear-gradient(135deg, rgba(255,96,146,0.1), rgba(255,240,250,0.9));
-      border-color: var(--accent);
-    }
+    .btn-secondary:hover { background: linear-gradient(135deg, rgba(255,96,146,0.1), rgba(255,240,250,0.9)); border-color: var(--accent); }
 
     /* Enhanced Notes List */
     .notes-list {
@@ -261,7 +222,6 @@
       gap: 1rem;
       margin-top: 2rem;
     }
-
     .note-card {
       background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,248,252,0.8));
       border: 1px solid var(--border);
@@ -271,51 +231,26 @@
       position: relative;
       overflow: hidden;
     }
+    .note-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); opacity: 0; transition: opacity 0.3s ease; }
+    .note-card:hover { transform: translateX(4px); box-shadow: var(--shadow-hover); }
+    .note-card:hover::before { opacity: 1; }
 
-    .note-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: var(--accent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+    .note-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+    .note-date { font-weight: 600; color: var(--text-primary); font-size: 14px; }
+    .note-mood { font-size: 24px; opacity: 0.8; }
+    .note-text { color: var(--text-secondary); font-size: 16px; line-height: 1.6; }
 
-    .note-card:hover {
-      transform: translateX(4px);
-      box-shadow: var(--shadow-hover);
+    /* delete button style */
+    .note-delete {
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 6px;
+      border-radius:8px;
     }
-
-    .note-card:hover::before {
-      opacity: 1;
-    }
-
-    .note-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.8rem;
-    }
-
-    .note-date {
-      font-weight: 600;
-      color: var(--text-primary);
-      font-size: 14px;
-    }
-
-    .note-mood {
-      font-size: 24px;
-      opacity: 0.8;
-    }
-
-    .note-text {
-      color: var(--text-secondary);
-      font-size: 16px;
-      line-height: 1.6;
-    }
+    .note-delete:hover { color: var(--accent); background: rgba(255,96,146,0.06); }
 
     /* ENHANCED GALLERY WITH EXPANDABLE IMAGES */
     .gallery-grid {
@@ -336,185 +271,57 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    .image-container:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 25px rgba(255,96,146,0.2);
-    }
-
-    .image-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-
-    .image-container:hover img {
-      transform: scale(1.1);
-    }
+    .image-container:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(255,96,146,0.2); }
+    .image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+    .image-container:hover img { transform: scale(1.1); }
 
     /* Image Modal */
     .image-modal {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; backdrop-filter: blur(10px);
     }
 
-    .image-modal.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .modal-content {
-      position: relative;
-      max-width: 90vw;
-      max-height: 90vh;
-      border-radius: 12px;
-      overflow: hidden;
-      transform: scale(0.8);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .image-modal.active .modal-content {
-      transform: scale(1);
-    }
-
-    .modal-content img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.9);
-      border: none;
-      color: var(--text-primary);
-      font-size: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      font-weight: bold;
-    }
-
-    .modal-close:hover {
-      background: white;
-      transform: scale(1.1);
-    }
+    .image-modal.active { opacity: 1; visibility: visible; }
+    .modal-content { position: relative; max-width: 90vw; max-height: 90vh; border-radius: 12px; overflow: hidden; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .image-modal.active .modal-content { transform: scale(1); }
+    .modal-content img { width: 100%; height: 100%; object-fit: contain; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); border: none; color: var(--text-primary); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; font-weight: bold; }
+    .modal-close:hover { background: white; transform: scale(1.1); }
 
     /* Slideshow */
     .slideshow{position:relative;overflow:hidden;border-radius:16px;background:linear-gradient(135deg, rgba(255,240,250,0.8), rgba(255,235,245,0.6))}
-    .slide{
-      min-height:120px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:1.5rem;
-      font-family:'Dancing Script',cursive;
-      font-size:20px;
-      color:var(--text-primary);
-      text-align:center;
-      font-weight:600;
-    }
+    .slide{ min-height:120px; display:flex; align-items:center; justify-content:center; padding:1.5rem; font-family:'Dancing Script',cursive; font-size:20px; color:var(--text-primary); text-align:center; font-weight:600; }
     .slideWrap{display:flex;transition:transform .8s cubic-bezier(.22,.9,.3,1)}
 
     /* Quotes */
     .quotes{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:1rem}
-    .quoteCard{
-      padding:1.2rem;
-      border-radius:14px;
-      background:linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,240,250,0.6));
-      font-size:14px;
-      border:1px solid var(--border);
-      transition: all 0.3s ease;
-    }
-    .quoteCard:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
+    .quoteCard{ padding:1.2rem; border-radius:14px; background:linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,240,250,0.6)); font-size:14px; border:1px solid var(--border); transition: all 0.3s ease; }
+    .quoteCard:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 
     /* Timeline */
     .timeline{display:flex;flex-direction:column;gap:1rem}
-    .tItem{
-      display:flex;
-      gap:1rem;
-      align-items:flex-start;
-      padding:1rem;
-      border-radius:12px;
-      background:rgba(255,255,255,0.6);
-      border:1px solid var(--border);
-      cursor:pointer;
-      transition: all 0.3s ease;
-    }
-    .tItem:hover {
-      background: rgba(255,255,255,0.9);
-      transform: translateX(4px);
-    }
+    .tItem{ display:flex; gap:1rem; align-items:flex-start; padding:1rem; border-radius:12px; background:rgba(255,255,255,0.6); border:1px solid var(--border); cursor:pointer; transition: all 0.3s ease; }
+    .tItem:hover { background: rgba(255,255,255,0.9); transform: translateX(4px); }
     .tDot{width:12px;height:12px;border-radius:50%;background:var(--accent);margin-top:8px;box-shadow:0 0 0 4px rgba(255,96,146,0.2)}
 
     /* Wheel */
     .wheelWrap{display:flex;flex-direction:column;align-items:center;gap:1rem}
     canvas#wheel{width:280px;height:280px;border-radius:50%;touch-action:none;box-shadow:var(--shadow)}
     .spinBtn{
-      padding:1rem 2rem;
-      border-radius:25px;
-      border:none;
-      background:linear-gradient(135deg,#ff92b7,#ffd2e8);
-      font-weight:700;
-      font-size:16px;
-      color:var(--text-primary);
-      cursor:pointer;
-      transition: all 0.3s ease;
+      padding:1rem 2rem; border-radius:25px; border:none;
+      background:linear-gradient(135deg,#ff92b7,#ffd2e8); font-weight:700; font-size:16px; color:var(--text-primary);
+      cursor:pointer; transition: all 0.3s ease;
     }
-    .spinBtn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255,146,183,0.4);
-    }
+    .spinBtn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,146,183,0.4); }
 
     /* Popup */
-    .popup{
-      position:fixed;
-      inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:100;
-      background:rgba(0,0,0,0.5);
-      backdrop-filter:blur(8px);
-    }
+    .popup{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:100; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); }
     .popup.show{display:flex}
-    .popupCard{
-      width:92%;
-      max-width:420px;
-      background:var(--card);
-      padding:2rem;
-      border-radius:20px;
-      box-shadow:0 25px 50px rgba(30,20,40,0.3);
-      text-align:center;
-      border:1px solid var(--border);
-      transform:scale(0.9);
-      transition: transform 0.3s ease;
-    }
-    .popup.show .popupCard {
-      transform: scale(1);
-    }
+    .popupCard{ width:92%; max-width:420px; background:var(--card); padding:2rem; border-radius:20px; box-shadow:0 25px 50px rgba(30,20,40,0.3); text-align:center; border:1px solid var(--border); transform:scale(0.9); transition: transform 0.3s ease; }
+    .popup.show .popupCard { transform: scale(1); }
 
     /* Responsive improvements */
     @media (min-width:700px){
@@ -525,12 +332,8 @@
     }
 
     @media (max-width: 480px) {
-      .form-actions {
-        flex-direction: column;
-      }
-      .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .form-actions { flex-direction: column; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
       canvas#wheel { width: 240px; height: 240px; }
     }
 
@@ -555,11 +358,7 @@
 
     /* Animations */
     .pop{transform-origin:center;animation:pop .4s cubic-bezier(0.4, 0, 0.2, 1)}
-    @keyframes pop{
-      0%{transform:scale(.8);opacity:0}
-      60%{transform:scale(1.05);opacity:1}
-      100%{transform:scale(1)}
-    }
+    @keyframes pop{ 0%{transform:scale(.8);opacity:0} 60%{transform:scale(1.05);opacity:1} 100%{transform:scale(1)} }
 
     /* Upload area styling */
     .upload-area {
@@ -572,17 +371,51 @@
       border-radius: 12px;
       border: 2px dashed var(--border);
     }
-
     .upload-area input[type="file"] {
       flex: 1;
       padding: 0.5rem;
       font-size: 14px;
     }
 
+    /* Password screen (full-screen) */
+    #passwordScreen{
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:9999;
+      background:linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.45));
+      backdrop-filter: blur(6px);
+    }
+    #passwordCard{
+      width:92%; max-width:420px; padding:2rem; border-radius:18px; background:linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,240,250,0.9));
+      box-shadow:0 40px 80px rgba(30,20,40,0.35); border:1px solid var(--border); text-align:center;
+      transform:translateY(0); transition: all 0.25s ease;
+    }
+    #passwordCard h2{ font-family:'Dancing Script',cursive; font-size:28px; margin:0 0 8px 0; color:var(--text-primary); }
+    #passwordCard p{ color:var(--text-muted); margin:0 0 16px 0; }
+    #passwordInput{ width:100%; padding:0.9rem 1rem; border-radius:12px; border:2px solid var(--border); font-size:16px; margin-bottom:12px; }
+    #passwordSubmit{ width:100%; padding:0.95rem; border-radius:12px; border:none; background:linear-gradient(135deg,var(--accent),rgba(255,96,146,0.8)); color:white; font-weight:700; cursor:pointer; }
+    #passwordMsg{ font-size:13px; color:var(--text-muted); margin-top:10px; min-height:18px; }
+    #lockControls{ display:flex; gap:8px; margin-top:12px; justify-content:center; }
+    #logoutBtn{ background:transparent; border:1px solid var(--border); padding:8px 12px; border-radius:10px; cursor:pointer; color:var(--text-primary); }
+    #logoutBtn:hover{ border-color:var(--accent); background:var(--accent-light); }
   </style>
 </head>
+
 <body>
   <div id="floatLayer" aria-hidden="true"></div>
+
+  <!-- PASSWORD SCREEN -->
+  <div id="passwordScreen" aria-hidden="false">
+    <div id="passwordCard" role="dialog" aria-modal="true" aria-label="Enter site password">
+      <h2>Welcome</h2>
+      <p>Enter the secret to unlock this tiny love diary</p>
+      <input id="passwordInput" type="password" placeholder="Password" autocomplete="off" />
+      <button id="passwordSubmit">Unlock</button>
+      <div id="passwordMsg"></div>
+      <div id="lockControls" style="display:none">
+        <button id="logoutBtn" type="button">Lock</button>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--text-muted)">This is local, client-side only — change the password in the source if needed.</div>
+    </div>
+  </div>
 
   <header class="card">
     <div class="brand">
@@ -676,7 +509,7 @@
         <h2 style="margin:0;font-size:1.5rem;font-family:'Dancing Script',cursive">Photo Memories</h2>
         <div class="text-muted" style="font-size:12px">Click to expand</div>
       </div>
-      
+
       <div class="upload-area">
         <input type="file" id="addImages" accept="image/*" multiple />
         <button id="clearGallery" class="btn-secondary" style="white-space:nowrap">Clear All</button>
@@ -759,6 +592,11 @@
   </div>
 
   <script>
+    /* --------------------------- CONFIG --------------------------- */
+    // Local password (change this to whatever you want)
+    const SITE_PASSWORD = 'lovesecret'; // change to your preferred password
+    const AUTH_KEY = 'site_authed';
+
     /* --------------------------- Helpers & Data --------------------------- */
     const specialDates = [
       {date:'2025-03-07',title:`Bazila's Birthday`, message:`Happy birthday, Zulaikha — my star 🌟`},
@@ -800,8 +638,6 @@
     const floatStyle = document.createElement('style');
     floatStyle.innerHTML='@keyframes floatUp{0%{transform:translate(-50%,10px) scale(1);opacity:1}100%{transform:translate(-50%,-160px) scale(.7);opacity:0}}';
     document.head.appendChild(floatStyle);
-
-    // gentle ongoing drift
     setInterval(()=>spawnHeart(),1400);
 
     /* ----------------------- Routing between sections ---------------------- */
@@ -819,20 +655,16 @@
 
     /* ----------------------- Love notes slideshow -------------------------- */
     const slideWrap = document.getElementById('slideWrap');
-    let notes = JSON.parse(localStorage.getItem('love_notes')) || defaultLoveNotes.slice();
+    let slidesNotes = JSON.parse(localStorage.getItem('custom_notes')||'[]').concat(defaultLoveNotes.slice());
     function renderSlides(){
       slideWrap.innerHTML='';
-      notes.forEach(n=>{
+      slidesNotes.forEach(n=>{
         const d=document.createElement('div');d.className='slide';d.textContent=n;slideWrap.appendChild(d);
       });
-      // clone to make sliding loop feel nicer
       const slides=slideWrap.children.length;
       let idx=0;
-      function advance(){
-        idx=(idx+1)%slides;
-        slideWrap.style.transform=`translateX(-${idx*100}%)`;
-      }
-      setInterval(advance,4200);
+      function advance(){ idx=(idx+1)%slides; slideWrap.style.transform=`translateX(-${idx*100}%)`; }
+      if(slides>0) setInterval(advance,4200);
     }
     renderSlides();
 
@@ -854,7 +686,7 @@
 
     const moods = ['😍','😊','😴','😔','😡','🤗','😭','❤️','🥳','😘'];
     let selectedMood = moods[0];
-    
+
     // Enhanced mood picker
     moods.forEach(m=>{
       const b=document.createElement('button');
@@ -868,39 +700,74 @@
       });
       moodPicker.appendChild(b);
     });
-    // Select first mood by default
     moodPicker.firstElementChild?.classList.add('selected');
 
+    // -- New: notes are stored with id for per-note deletion.
     function loadNotes(){
-      const arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
+      // fetch array or empty
+      let arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
+
+      // migrate older entries (without id) by assigning ids
+      let migrated = false;
+      arr = arr.map(n=>{
+        if(!n.id){ migrated = true; return {...n, id: Date.now() + Math.floor(Math.random()*1000)}; }
+        return n;
+      });
+      if(migrated) localStorage.setItem('diary_notes', JSON.stringify(arr));
+
       notesList.innerHTML='';
-      
+
       if(arr.length === 0) {
         notesList.innerHTML = '<div class="text-muted center" style="padding:2rem">No love notes yet. Write your first one! 💕</div>';
         return;
       }
-      
+
+      // show newest first
       arr.slice().reverse().forEach((n,i)=>{
         const noteCard = document.createElement('div');
         noteCard.className = 'note-card';
+
+        // sanitize text
+        const safeText = escapeHtml(n.text);
+
+        // build innerHTML with a delete button (data-id)
         noteCard.innerHTML = `
           <div class="note-header">
-            <div class="note-date">${formatDate(n.date)}</div>
-            <div class="note-mood">${n.mood}</div>
+            <div>
+              <div class="note-date">${formatDate(n.date)}</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="note-mood">${n.mood || ''}</div>
+              <button class="note-delete" data-id="${n.id}" title="Delete note">🗑️</button>
+            </div>
           </div>
-          <div class="note-text">${escapeHtml(n.text)}</div>
+          <div class="note-text">${safeText}</div>
         `;
         notesList.appendChild(noteCard);
+      });
+
+      // attach delete handlers (delegation-friendly)
+      notesList.querySelectorAll('.note-delete').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = btn.dataset.id;
+          if(!id) return;
+          if(!confirm('Delete this note? This cannot be undone.')) return;
+          let current = JSON.parse(localStorage.getItem('diary_notes')||'[]');
+          current = current.filter(x=>String(x.id)!==String(id));
+          localStorage.setItem('diary_notes', JSON.stringify(current));
+          loadNotes();
+        });
       });
     }
 
     function formatDate(dateStr) {
       const date = new Date(dateStr);
-      return date.toLocaleDateString('en-US', { 
-        weekday: 'short', 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
+      if(isNaN(date)) return dateStr;
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
       });
     }
 
@@ -913,12 +780,14 @@
         return;
       }
       const arr = JSON.parse(localStorage.getItem('diary_notes')||'[]');
-      arr.push({date:d,text:text,mood:selectedMood});
-      localStorage.setItem('diary_notes',JSON.stringify(arr));
+
+      // Add with unique id
+      arr.push({ id: Date.now() + Math.floor(Math.random()*1000), date:d, text:text, mood:selectedMood });
+      localStorage.setItem('diary_notes', JSON.stringify(arr));
       noteContent.value='';
       noteDate.value=new Date().toISOString().slice(0,10);
       loadNotes();
-      
+
       // Show success animation
       spawnHeart(50, 20, 32);
     });
@@ -929,6 +798,9 @@
         loadNotes();
       }
     });
+
+    // initialize
+    noteDate.value = new Date().toISOString().slice(0,10);
     loadNotes();
 
     /* ---------------------- Enhanced Gallery with expandable images ------------ */
@@ -939,37 +811,23 @@
     const modalClose = document.querySelector('.modal-close');
 
     function setupImageModal() {
-      // Close modal events
       modalClose.addEventListener('click', closeModal);
-      imageModal.addEventListener('click', (e) => {
-        if (e.target === imageModal) closeModal();
-      });
-      
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
-      });
+      imageModal.addEventListener('click', (e) => { if (e.target === imageModal) closeModal(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
     }
-
     function openModal(imageSrc) {
       modalImage.src = imageSrc;
       imageModal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
-
     function closeModal() {
       imageModal.classList.remove('active');
       document.body.style.overflow = '';
-      setTimeout(() => {
-        modalImage.src = '';
-      }, 300);
+      setTimeout(() => { modalImage.src = ''; }, 300);
     }
-
     function makeImageClickable(img) {
-      img.parentElement.addEventListener('click', () => {
-        openModal(img.src);
-      });
+      img.parentElement.addEventListener('click', () => { openModal(img.src); });
     }
-
     function renderGallery(){
       const imgs = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
       if(imgs.length>0){
@@ -993,10 +851,7 @@
     addImages.addEventListener('change',async(e)=>{
       const files=Array.from(e.target.files).slice(0,30);
       const arr = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
-      for(const f of files){
-        const data = await fileToDataUrl(f);
-        arr.push(data);
-      }
+      for(const f of files){ const data = await fileToDataUrl(f); arr.push(data); }
       localStorage.setItem('gallery_imgs',JSON.stringify(arr));
       renderGallery();
       addImages.value='';
@@ -1010,15 +865,7 @@
       }
     });
 
-    function fileToDataUrl(file){
-      return new Promise((res,rej)=>{
-        const r=new FileReader();
-        r.onload=()=>res(r.result);
-        r.onerror=rej;
-        r.readAsDataURL(file);
-      });
-    }
-
+    function fileToDataUrl(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
     setupImageModal();
     renderGallery();
 
@@ -1075,105 +922,43 @@
     const wheelCanvas = document.getElementById('wheel');
     const wheelCtx = wheelCanvas.getContext('2d');
     const wheelItems = ['Kiss','Random pics','Surprise','Hug attack','Random voice','Random video','Love bomb','Song'];
-    
     function drawWheel(){
-      const ctx = wheelCtx; 
-      const w = wheelCanvas.width; 
-      const h = wheelCanvas.height; 
-      const cx = w/2, cy = h/2; 
-      const r = Math.min(cx,cy) - 20;
-      
+      const ctx = wheelCtx; const w = wheelCanvas.width; const h = wheelCanvas.height; const cx = w/2, cy = h/2; const r = Math.min(cx,cy) - 20;
       ctx.clearRect(0,0,w,h);
       const slice = 2*Math.PI / wheelItems.length;
-      
       wheelItems.forEach((it,i)=>{
-        const start = i * slice; 
-        const end = start + slice;
-        
-        ctx.beginPath(); 
-        ctx.moveTo(cx,cy); 
-        ctx.arc(cx,cy,r,start,end); 
-        ctx.closePath();
-        
-        // Enhanced colors
+        const start = i * slice; const end = start + slice;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath();
         const colors = ['#FFE4E1', '#FFB6C1', '#FFC0CB', '#FFCCCB', '#FFE4E6', '#FFF0F5', '#FFEEF0', '#FFE1E6'];
-        ctx.fillStyle = colors[i] || '#FFE4E1';
-        ctx.fill();
-        
-        // Border
-        ctx.strokeStyle = 'rgba(255,96,146,0.3)';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        
-        // text
-        ctx.save(); 
-        ctx.translate(cx,cy); 
-        ctx.rotate(start + slice/2); 
-        ctx.textAlign = 'right'; 
-        ctx.fillStyle = '#2d1b2e'; 
-        ctx.font = 'bold 16px Inter'; 
-        ctx.fillText(it, r-25, 6); 
-        ctx.restore();
+        ctx.fillStyle = colors[i] || '#FFE4E1'; ctx.fill();
+        ctx.strokeStyle = 'rgba(255,96,146,0.3)'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.save(); ctx.translate(cx,cy); ctx.rotate(start + slice/2); ctx.textAlign = 'right'; ctx.fillStyle = '#2d1b2e'; ctx.font = 'bold 16px Inter';
+        ctx.fillText(it, r-25, 6); ctx.restore();
       });
-      
-      // Enhanced center
       const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60);
-      gradient.addColorStop(0, '#fff');
-      gradient.addColorStop(1, '#ffb6c1');
-      
-      ctx.beginPath(); 
-      ctx.arc(cx,cy,60,0,2*Math.PI);
-      ctx.fillStyle = gradient;
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255,96,146,0.5)';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-      
-      ctx.fillStyle = '#2d1b2e';
-      ctx.font = '700 20px Inter';
-      ctx.textAlign = 'center';
-      ctx.fillText('❤️',cx,cy-8);
-      ctx.font = '600 14px Inter';
-      ctx.fillText('Spin',cx,cy+12);
+      gradient.addColorStop(0, '#fff'); gradient.addColorStop(1, '#ffb6c1');
+      ctx.beginPath(); ctx.arc(cx,cy,60,0,2*Math.PI); ctx.fillStyle = gradient; ctx.fill();
+      ctx.strokeStyle = 'rgba(255,96,146,0.5)'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.fillStyle = '#2d1b2e'; ctx.font = '700 20px Inter'; ctx.textAlign = 'center'; ctx.fillText('❤️',cx,cy-8);
+      ctx.font = '600 14px Inter'; ctx.fillText('Spin',cx,cy+12);
     }
     drawWheel();
-
     let isSpinning=false;
     document.getElementById('spin').addEventListener('click',async()=>{
-      if(isSpinning) return; 
-      isSpinning=true; 
-      playPop();
-      
-      const spins = Math.floor(Math.random()*4)+6; // more spins
-      const sector = Math.floor(Math.random()*wheelItems.length);
+      if(isSpinning) return; isSpinning=true; playPop();
+      const spins = Math.floor(Math.random()*4)+6; const sector = Math.floor(Math.random()*wheelItems.length);
       const finalAngle = (spins*2*Math.PI) + (sector * (2*Math.PI/wheelItems.length)) + (Math.random() * (2*Math.PI/wheelItems.length));
-      const duration = 5000; // longer duration
-      
-      animateRotation(finalAngle,duration).then(()=>{
-        isSpinning=false; 
-        const result=wheelItems[sector]; 
-        document.getElementById('wheelResult').textContent=`Result: ${result}`;
-        showPopup(`<h3 style='color:var(--text-primary);font-family:Dancing Script,cursive'>${result}</h3><p class='text-muted'>A sweet outcome awaits... 💕</p>`);
-        spawnHeart(50, 30, 36);
-      });
+      const duration = 5000;
+      animateRotation(finalAngle,duration).then(()=>{ isSpinning=false; const result=wheelItems[sector]; document.getElementById('wheelResult').textContent=`Result: ${result}`; showPopup(`<h3 style='color:var(--text-primary);font-family:Dancing Script,cursive'>${result}</h3><p class='text-muted'>A sweet outcome awaits... 💕</p>`); spawnHeart(50, 30, 36); });
     });
 
     function animateRotation(target, duration){
-      const el = wheelCanvas; 
-      const start = performance.now(); 
-      const from = (parseFloat(el.dataset.rot) || 0);
-      
+      const el = wheelCanvas; const start = performance.now(); const from = (parseFloat(el.dataset.rot) || 0);
       return new Promise(res=>{
         function frame(t){
-          const p = Math.min(1,(t-start)/duration);
-          const eased = 1 - Math.pow(1-p,4); // smoother easing
-          const cur = from + (target-from)*eased;
+          const p = Math.min(1,(t-start)/duration); const eased = 1 - Math.pow(1-p,4); const cur = from + (target-from)*eased;
           el.style.transform = `rotate(${cur}rad)`;
-          if(p<1) requestAnimationFrame(frame); 
-          else {
-            el.dataset.rot = cur; 
-            res();
-          }
+          if(p<1) requestAnimationFrame(frame); else { el.dataset.rot = cur; res(); }
         }
         requestAnimationFrame(frame);
       });
@@ -1185,14 +970,12 @@
       let response = "Correct — Bazila, always 💖";
       if(answer === "Moomin") response = "Sweet, but we know Bazila wins! 😉";
       if(answer === "Everyone") response = "Nice try, but Bazila is #1! 💕";
-      
       document.getElementById('quizResult').textContent = response;
       spawnHeart(null,null,28);
     }));
 
     const loveMeter = document.getElementById('loveMeter');
     const loveMeterText = document.getElementById('loveMeterText');
-    
     function updateLoveText(v){
       if(v>95) return 'Infinite love detected! 🌟✨';
       if(v>85) return 'So much love overflowing 💖';
@@ -1202,7 +985,6 @@
       if(v>10) return 'Cuddles needed 🤗';
       return 'Need more hugs! 🫂';
     }
-    
     loveMeter.addEventListener('input',e=>{
       const value = e.target.value;
       loveMeterText.textContent = updateLoveText(value);
@@ -1213,18 +995,13 @@
     /* ----------------------- keyboard easter egg ------------------------- */
     const keyBuffer=[]; const secret='zulaikha';
     window.addEventListener('keydown',e=>{
-      keyBuffer.push(e.key.toLowerCase()); 
-      if(keyBuffer.length>secret.length) keyBuffer.shift();
+      keyBuffer.push(e.key.toLowerCase()); if(keyBuffer.length>secret.length) keyBuffer.shift();
       if(keyBuffer.join('').includes(secret)) triggerZulaikha();
     });
-    
+
     function triggerZulaikha(){
-      showPopup(`<div style="font-family:Dancing Script,cursive;font-size:22px;color:var(--text-primary)">Zulaikha —<br/>
-      You are the poem I never finish writing. <br/><br/>
-      <span style="color:var(--accent)">Forever, Moomin 💕</span></div>`);
-      for(let i=0;i<30;i++) {
-        setTimeout(() => spawnHeart(null, null, 28 + Math.random() * 12), i * 100);
-      }
+      showPopup(`<div style="font-family:Dancing Script,cursive;font-size:22px;color:var(--text-primary)">Zulaikha —<br/>You are the poem I never finish writing. <br/><br/><span style="color:var(--accent)">Forever, Moomin 💕</span></div>`);
+      for(let i=0;i<30;i++){ setTimeout(() => spawnHeart(null, null, 28 + Math.random() * 12), i * 100); }
     }
 
     /* ------------------------- helper utilities ------------------------- */
@@ -1233,41 +1010,27 @@
     }
 
     /* ------------------------ Audio: user-upload + webaudio ---------------- */
-    let bgAudio=null; 
-    let audioFileUrl=null; 
-    const audioToggle=document.getElementById('audioToggle');
-    
+    let bgAudio=null; let audioFileUrl=null; const audioToggle=document.getElementById('audioToggle');
     audioToggle.addEventListener('click',()=>{
       if(!bgAudio){
         const f=inputFile('Upload a music file (mp3) for background music');
         f.then(file=>{
-          if(!file) return; 
-          audioFileUrl=URL.createObjectURL(file); 
-          bgAudio=new Audio(audioFileUrl); 
-          bgAudio.loop=true; 
-          bgAudio.volume=0.3; 
-          bgAudio.play(); 
+          if(!file) return;
+          audioFileUrl=URL.createObjectURL(file);
+          bgAudio=new Audio(audioFileUrl);
+          bgAudio.loop=true; bgAudio.volume=0.3; bgAudio.play();
           audioToggle.textContent='Music: ON';
         });
       } else {
-        if(bgAudio.paused){
-          bgAudio.play();
-          audioToggle.textContent='Music: ON'
-        } else {
-          bgAudio.pause();
-          audioToggle.textContent='Music: OFF'
-        }
+        if(bgAudio.paused){ bgAudio.play(); audioToggle.textContent='Music: ON' }
+        else { bgAudio.pause(); audioToggle.textContent='Music: OFF' }
       }
     });
-    
     function inputFile(promptText){
       return new Promise(res=>{
-        const inp=document.createElement('input');
-        inp.type='file';
-        inp.accept='audio/*';
+        const inp=document.createElement('input'); inp.type='file'; inp.accept='audio/*';
         inp.onchange=()=>res(inp.files[0]);
-        inp.click();
-        setTimeout(()=>res(null),60000);
+        inp.click(); setTimeout(()=>res(null),60000);
       });
     }
 
@@ -1275,23 +1038,14 @@
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playPop(){
       try{
-        const o = audioCtx.createOscillator(); 
-        const g = audioCtx.createGain();
-        o.type='sine'; 
-        o.frequency.value=520; 
-        g.gain.value=0.0001; 
-        o.connect(g); 
-        g.connect(audioCtx.destination);
-        o.start(); 
-        g.gain.exponentialRampToValueAtTime(0.08,audioCtx.currentTime+0.01); 
-        g.gain.exponentialRampToValueAtTime(0.00001,audioCtx.currentTime+0.15); 
-        o.stop(audioCtx.currentTime+0.2);
+        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+        o.type='sine'; o.frequency.value=520; g.gain.value=0.0001; o.connect(g); g.connect(audioCtx.destination);
+        o.start(); g.gain.exponentialRampToValueAtTime(0.08,audioCtx.currentTime+0.01); g.gain.exponentialRampToValueAtTime(0.00001,audioCtx.currentTime+0.15); o.stop(audioCtx.currentTime+0.2);
       }catch(e){/* ignore */}
     }
-
     document.addEventListener('click',e=>{
-      if(e.target.closest('.glowHeart') || 
-         e.target.closest('.moodBtn') || 
+      if(e.target.closest('.glowHeart') ||
+         e.target.closest('.moodBtn') ||
          e.target.closest('.btn-primary') ||
          e.target.closest('.navbtn')) {
         playPop();
@@ -1300,13 +1054,12 @@
 
     /* -------------------- Initial setup -------------------------- */
     document.title = 'Moomin ❤️ Bazila';
-    noteDate.value = new Date().toISOString().slice(0,10);
 
     // Helper for adding custom love notes
-    window.addLoveNote = (txt) => { 
-      notes.push(txt); 
-      localStorage.setItem('custom_notes', JSON.stringify([txt].concat(JSON.parse(localStorage.getItem('custom_notes')||'[]')))); 
-      renderSlides(); 
+    window.addLoveNote = (txt) => {
+      slidesNotes.push(txt);
+      localStorage.setItem('custom_notes', JSON.stringify([txt].concat(JSON.parse(localStorage.getItem('custom_notes')||'[]'))));
+      renderSlides();
     };
 
     // Reset utility
@@ -1314,13 +1067,11 @@
       if(confirm('Reset local storage for this love site?')) {
         localStorage.clear();
         location.reload();
-      } 
+      }
     };
 
     // Close popup on outside click
-    popup.addEventListener('click', (e)=>{ 
-      if(e.target===popup) popup.classList.remove('show'); 
-    });
+    popup.addEventListener('click', (e)=>{ if(e.target===popup) popup.classList.remove('show'); });
 
     // Welcome heart
     setTimeout(()=>spawnHeart(null,null,40),1200);
@@ -1330,15 +1081,13 @@
       const now = new Date();
       let year = now.getFullYear();
       let target = new Date(year, month-1, day);
-      if(target < new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
-        target = new Date(year+1, month-1, day);
-      }
+      if(target < new Date(now.getFullYear(), now.getMonth(), now.getDate())) { target = new Date(year+1, month-1, day); }
       const diff = Math.ceil((target - new Date(now.getFullYear(), now.getMonth(), now.getDate()))/86400000);
       return {days:diff, date: target};
     }
 
     function nextSpecialDate(){
-      const today=new Date(); 
+      const today=new Date();
       const candidates = specialDates.map(sd=>{
         const [y,m,d] = sd.date.split('-').map(Number);
         let year = (y && y>=today.getFullYear()) ? y : today.getFullYear();
@@ -1355,16 +1104,70 @@
         const days = Math.ceil((next.dt - new Date())/86400000);
         document.getElementById('countdownNext').textContent = `${days} day${days !== 1 ? 's' : ''} until ${next.sd.title}`;
       }
-      
       const ann = daysUntilMonthDay(3,9);
       document.getElementById('countdownAnniversary').textContent = `${ann.days} day${ann.days !== 1 ? 's' : ''} until Anniversary`;
-      
       const bday = daysUntilMonthDay(4,10);
       document.getElementById('countdownBirthday').textContent = `${bday.days} day${bday.days !== 1 ? 's' : ''} until Moomin's Birthday`;
     }
-    
-    updateCountdowns(); 
-    setInterval(updateCountdowns, 60*60*1000); // Update every hour
+    updateCountdowns(); setInterval(updateCountdowns, 60*60*1000);
+
+    /* ------------------------- PASSWORD GATE LOGIC ------------------------- */
+    const passwordScreen = document.getElementById('passwordScreen');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordSubmit = document.getElementById('passwordSubmit');
+    const passwordMsg = document.getElementById('passwordMsg');
+    const lockControls = document.getElementById('lockControls');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    function hidePasswordScreen(){ passwordScreen.style.display = 'none'; passwordScreen.setAttribute('aria-hidden','true'); document.body.style.overflow='auto'; }
+    function showPasswordScreen(){ passwordScreen.style.display = 'flex'; passwordScreen.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+
+    // check auth flag
+    const authed = localStorage.getItem(AUTH_KEY) === 'true';
+    if(authed) {
+      hidePasswordScreen();
+      lockControls.style.display = 'flex';
+    } else {
+      showPasswordScreen();
+      lockControls.style.display = 'none';
+    }
+
+    // submit handler
+    passwordSubmit.addEventListener('click', tryPassword);
+    passwordInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') tryPassword(); });
+
+    function tryPassword(){
+      const val = passwordInput.value || '';
+      if(val === SITE_PASSWORD){
+        passwordMsg.textContent = 'Unlocked — welcome!';
+        localStorage.setItem(AUTH_KEY, 'true'); // persist
+        setTimeout(()=>{ hidePasswordScreen(); lockControls.style.display = 'flex'; passwordInput.value=''; passwordMsg.textContent=''; }, 350);
+      } else {
+        passwordMsg.textContent = 'Wrong password — try again.';
+        passwordMsg.style.color = 'var(--accent)';
+        // small shake
+        document.getElementById('passwordCard').animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:260});
+        passwordInput.value='';
+      }
+    }
+
+    // explicit lock (logout)
+    logoutBtn.addEventListener('click', ()=>{
+      localStorage.removeItem(AUTH_KEY);
+      // show screen
+      showPasswordScreen();
+      lockControls.style.display = 'none';
+    });
+
+    // Accessibility: if user focuses anywhere, bring focus to password input while locked
+    document.addEventListener('focusin', (e)=>{
+      if(localStorage.getItem(AUTH_KEY) !== 'true') {
+        // keep focus on password input
+        if(e.target !== passwordInput && e.target !== passwordSubmit) passwordInput.focus();
+      }
+    });
+
+    /* --------------------------------------------------------------------- */
 
   </script>
 </body>
