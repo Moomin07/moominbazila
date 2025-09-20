@@ -275,6 +275,7 @@
     <div style="margin-left:auto" class="row">
       <button id="audioToggle" class="navbtn tiny">Music</button>
       <button id="surpriseBtn" class="navbtn tiny">Surprise</button>
+      <button id="lockBtn" class="navbtn tiny" title="Lock the app">Lock</button>
     </div>
   </header>
 
@@ -653,7 +654,7 @@
     noteDate.value = new Date().toISOString().slice(0,10);
     loadNotes();
 
-    /* ---------------------- Gallery with compression ----------------------- */
+    /* ---------------------- Gallery with compression + keep defaults ----------------------- */
     const addImages = document.getElementById('addImages');
     const galleryGrid = document.getElementById('galleryGrid');
     const imageModal = document.getElementById('imageModal');
@@ -707,23 +708,35 @@
       });
     }
 
+    // Keep defaults, append uploaded images
     function renderGallery(){
-      const imgs = JSON.parse(localStorage.getItem('gallery_imgs')||'[]');
-      if(imgs.length>0){
-        galleryGrid.innerHTML='';
-        imgs.forEach((dataUrl,idx)=>{
-          const container = document.createElement('div');
-          container.className = 'image-container';
-          const img = document.createElement('img');
-          img.src = dataUrl;
-          img.alt = `Photo ${idx + 1}`;
-          container.appendChild(img);
-          galleryGrid.appendChild(container);
-          makeImageClickable(img);
-        });
-      } else {
-        document.querySelectorAll('#galleryGrid img').forEach(makeImageClickable);
-      }
+      const imgs = JSON.parse(localStorage.getItem('gallery_imgs') || '[]');
+
+      // Wire defaults once
+      galleryGrid.querySelectorAll('img:not([data-wired])').forEach(img => {
+        makeImageClickable(img);
+        img.setAttribute('data-wired', 'true');
+      });
+
+      // Remove previously appended uploaded items to avoid duplicates
+      galleryGrid.querySelectorAll('[data-uploaded="true"]').forEach(el => el.remove());
+
+      // Append uploaded images after defaults
+      imgs.forEach((dataUrl, idx) => {
+        const container = document.createElement('div');
+        container.className = 'image-container';
+        container.setAttribute('data-uploaded', 'true');
+
+        const img = document.createElement('img');
+        img.src = dataUrl;
+        img.alt = `Uploaded photo ${idx + 1}`;
+
+        container.appendChild(img);
+        galleryGrid.appendChild(container);
+
+        makeImageClickable(img);
+        img.setAttribute('data-wired', 'true');
+      });
     }
 
     addImages.addEventListener('change', async (e)=>{
@@ -749,10 +762,11 @@
       spawnHeart(70, 30, 28);
     });
 
+    // Clear only uploaded images; keep defaults in place
     document.getElementById('clearGallery').addEventListener('click',()=>{
-      if(confirm('Clear all gallery images? This cannot be undone.')) {
+      if(confirm('Clear all uploaded images? This cannot be undone.')) {
         localStorage.removeItem('gallery_imgs');
-        location.reload();
+        galleryGrid.querySelectorAll('[data-uploaded="true"]').forEach(el => el.remove());
       }
     });
 
@@ -1088,7 +1102,27 @@
         passwordInput.focus();
       }
     }
-    // Prevent closing by clicking outside; always requires correct password
+
+    /* ------------------------- Lock button (re-lock anytime) ------------------------- */
+    const lockBtn = document.getElementById('lockBtn');
+    if (lockBtn) {
+      lockBtn.addEventListener('click', () => {
+        // Pause music if playing
+        if (typeof bgAudio !== 'undefined' && bgAudio && !bgAudio.paused) {
+          bgAudio.pause();
+          const audioToggleBtn = document.getElementById('audioToggle');
+          if (audioToggleBtn) audioToggleBtn.textContent = 'Music: OFF';
+        }
+        // Close any open popups/modals
+        const popupEl = document.getElementById('popup');
+        if (popupEl) popupEl.classList.remove('show');
+        const imageModalEl = document.getElementById('imageModal');
+        if (imageModalEl) imageModalEl.classList.remove('active');
+
+        // Show password screen again
+        showPasswordScreen();
+      });
+    }
   </script>
 </body>
 </html>
