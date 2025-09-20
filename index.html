@@ -159,6 +159,19 @@
     .image-container img{ width:100%; height:100%; object-fit:cover; transition:transform 0.3s ease; }
     .image-container:hover img{ transform:scale(1.1); }
 
+    /* Per-image delete button (uploaded only) */
+    .img-delete{
+      position:absolute; top:8px; right:8px; width:32px; height:32px;
+      border-radius:50%; border:1px solid var(--border);
+      background:rgba(255,255,255,0.95); color:var(--text-primary);
+      display:flex; align-items:center; justify-content:center;
+      font-size:18px; line-height:1; cursor:pointer;
+      opacity:0; transition:opacity .2s ease, transform .2s ease;
+      box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    }
+    .image-container:hover .img-delete{ opacity:1; }
+    .img-delete:hover{ transform:scale(1.05); background:#fff; color:var(--accent); }
+
     .image-modal{ position:fixed; inset:0; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; z-index:1000; opacity:0; visibility:hidden; transition:all 0.3s ease; backdrop-filter:blur(10px); }
     .image-modal.active{ opacity:1; visibility:visible; }
     .modal-content{ position:relative; max-width:90vw; max-height:90vh; border-radius:12px; overflow:hidden; transform:scale(0.8); transition:transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -356,6 +369,7 @@
 
       <div class="upload-area">
         <input type="file" id="addImages" accept="image/*" multiple />
+        <button id="exportGallery" class="btn-secondary" style="white-space:nowrap">Export</button>
         <button id="clearGallery" class="btn-secondary" style="white-space:nowrap">Clear All</button>
       </div>
 
@@ -654,8 +668,10 @@
     noteDate.value = new Date().toISOString().slice(0,10);
     loadNotes();
 
-    /* ---------------------- Gallery with compression + keep defaults ----------------------- */
+    /* ---------------------- Gallery with compression + keep defaults + per-image delete ----------------------- */
     const addImages = document.getElementById('addImages');
+    const exportGalleryBtn = document.getElementById('exportGallery');
+    const clearGalleryBtn = document.getElementById('clearGallery');
     const galleryGrid = document.getElementById('galleryGrid');
     const imageModal = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
@@ -708,7 +724,7 @@
       });
     }
 
-    // Keep defaults, append uploaded images
+    // Keep defaults, append uploaded images with delete buttons
     function renderGallery(){
       const imgs = JSON.parse(localStorage.getItem('gallery_imgs') || '[]');
 
@@ -726,18 +742,44 @@
         const container = document.createElement('div');
         container.className = 'image-container';
         container.setAttribute('data-uploaded', 'true');
+        container.setAttribute('data-idx', String(idx));
 
         const img = document.createElement('img');
         img.src = dataUrl;
         img.alt = `Uploaded photo ${idx + 1}`;
 
+        const delBtn = document.createElement('button');
+        delBtn.className = 'img-delete';
+        delBtn.type = 'button';
+        delBtn.title = 'Delete image';
+        delBtn.setAttribute('aria-label', 'Delete image');
+        delBtn.textContent = '×';
+
         container.appendChild(img);
+        container.appendChild(delBtn);
         galleryGrid.appendChild(container);
 
         makeImageClickable(img);
         img.setAttribute('data-wired', 'true');
       });
     }
+
+    // Event delegation for per-image delete (prevents modal from opening)
+    galleryGrid.addEventListener('click', (e) => {
+      const btn = e.target.closest('.img-delete');
+      if(!btn) return;
+      e.stopPropagation(); // don't trigger image modal
+      const container = btn.closest('.image-container');
+      const idxStr = container?.getAttribute('data-idx');
+      if(idxStr == null) return;
+      const idx = parseInt(idxStr, 10);
+      let arr = JSON.parse(localStorage.getItem('gallery_imgs') || '[]');
+      if(Number.isNaN(idx) || idx < 0 || idx >= arr.length) return;
+      if(!confirm('Delete this uploaded image?')) return;
+      arr.splice(idx, 1);
+      localStorage.setItem('gallery_imgs', JSON.stringify(arr));
+      renderGallery();
+    });
 
     addImages.addEventListener('change', async (e)=>{
       const files = Array.from(e.target.files).slice(0,30);
@@ -762,8 +804,23 @@
       spawnHeart(70, 30, 28);
     });
 
+    // Export uploaded images
+    exportGalleryBtn.addEventListener('click', ()=>{
+      const imgs = JSON.parse(localStorage.getItem('gallery_imgs') || '[]');
+      if(imgs.length === 0){ alert('No uploaded images to export.'); return; }
+      imgs.forEach((data, i) => {
+        const a = document.createElement('a');
+        a.href = data;
+        const ext = (data.match(/^data:image\/([^;]+)/) || [,'png'])[1];
+        a.download = `mb_photo_${i+1}.${ext}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+    });
+
     // Clear only uploaded images; keep defaults in place
-    document.getElementById('clearGallery').addEventListener('click',()=>{
+    clearGalleryBtn.addEventListener('click',()=>{
       if(confirm('Clear all uploaded images? This cannot be undone.')) {
         localStorage.removeItem('gallery_imgs');
         galleryGrid.querySelectorAll('[data-uploaded="true"]').forEach(el => el.remove());
